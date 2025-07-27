@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 /**
  * PartnersCarousel displays a horizontally scrolling marquee of partner logos.
  * It includes a UAE-flag accent bar at the top to match the Hero section.
@@ -57,17 +57,14 @@ const PartnersCarousel: React.FC = () => {
 
   // Duplicate the logos list for seamless scrolling.
   const logos = [...partnerLogos, ...partnerLogos];
-
   return (
     <section className="relative py-8 bg-white">
-      {/* UAE-flag accent bar at the top, matching the hero carousel’s style */}
       <div className="absolute top-0 left-0 w-full h-1 flex">
-          <div className="flex-1 bg-uae-red"></div>
-          <div className="flex-1 bg-white"></div>
-          <div className="flex-1 bg-uae-black"></div>
-          <div className="flex-1 bg-uae-green"></div>
+        <div className="flex-1 bg-uae-red"></div>
+        <div className="flex-1 bg-white"></div>
+        <div className="flex-1 bg-uae-black"></div>
+        <div className="flex-1 bg-uae-green"></div>
       </div>
-      {/* Heading above the logos, harmonizing with site colours */}
       <p className="text-center text-uae-black text-lg md:text-xl font-medium mt-2 mb-6">
         Backed up by leading brands:
       </p>
@@ -76,29 +73,34 @@ const PartnersCarousel: React.FC = () => {
           className="flex items-center whitespace-nowrap"
           style={{ animation: 'partners-scroll 30s linear infinite' }}
         >
-          {logos.map((logo, idx) =>
-            logo.src ? (
-              <div
-                key={`logo-${idx}`}
-                className="mx-4 bg-white rounded-md p-3 shadow-sm flex items-center justify-center flex-shrink-0"
-                style={{ width: '8rem', height: '4.5rem' }}
-              >
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  className="h-full w-full object-contain"
-                />
-              </div>
-            ) : (
-              <div
-                key={`logo-${idx}`}
-                className="mx-4 bg-white rounded-md p-3 shadow-sm flex items-center justify-center text-md font-semibold text-gray-700 flex-shrink-0"
-                style={{ width: '8rem', height: '4.5rem' }}
-              >
-                {logo.alt}
-              </div>
-            )
-          )}
+          {logos.map((logo, idx) => (
+            <Link
+              key={idx}
+              to="/partners"
+              className="mx-4 flex-shrink-0"
+              aria-label={`Go to partners page`}
+            >
+              {logo.src ? (
+                <div
+                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center"
+                  style={{ width: '8rem', height: '4.5rem' }}
+                >
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center text-md font-semibold text-gray-700"
+                  style={{ width: '8rem', height: '4.5rem' }}
+                >
+                  {logo.alt}
+                </div>
+              )}
+            </Link>
+          ))}
         </div>
       </div>
     </section>
