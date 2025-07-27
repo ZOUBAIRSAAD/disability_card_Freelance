@@ -1,4 +1,6 @@
 import { AlertTriangle, Eye, FileText, Lock, Shield } from 'lucide-react';
+const termsIcon =
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Handshake_icon_black_circle.svg/590px-Handshake_icon_black_circle.svg.png';
 
 const TermsConditions = () => {
   return (

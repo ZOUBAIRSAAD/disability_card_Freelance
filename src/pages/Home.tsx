@@ -7,6 +7,7 @@ import ApplicationProcess from '../components/ApplicationProcess';
 import Stats from '../components/Stats';
 import Testimonials from '../components/Testimonials';
 import CTA from '../components/CTA';
+import PartnersCarousel from '../components/PartnersCarousel';
 
 const Home = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const Home = () => {
   return (
     <div>
       <Hero />
+      <PartnersCarousel />
       <CardShowcase />
       <ServicesOverview />
       <ApplicationProcess />

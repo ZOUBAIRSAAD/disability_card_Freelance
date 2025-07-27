@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreditCard, CheckCircle, ArrowRight, Shield, Heart, Users, Award } from 'lucide-react';
 
+import DisabilityCardImg from '/National-Disability-Carde.jpg';
 const DisabilitiesCard = () => {
   const benefits = [
     {
@@ -128,7 +129,14 @@ const DisabilitiesCard = () => {
           </div>
         </div>
       </section>
-
+     {/* Card Preview */}
+     <div className="flex justify-center my-8">
+        <img
+          src={DisabilityCardImg}
+          alt="Disabilities Card"
+          className="w-full max-w-md rounded-lg shadow-md"
+        />
+      </div>
       {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
