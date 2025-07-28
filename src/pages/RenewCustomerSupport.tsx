@@ -411,7 +411,7 @@ const RenewCustomerSupport = () => {
             
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Card Validity</h3>
-              <p className="text-3xl font-bold text-gray-800 mb-2">3 Years</p>
+              <p className="text-3xl font-bold text-gray-800 mb-2">2 Years</p>
               <p className="text-gray-600">Extended validity period from renewal date</p>
             </div>
           </div>

@@ -70,7 +70,7 @@ const FAQ = () => {
       questions: [
         {
           question: "How long is my card valid?",
-          answer: "Cards are valid for 3 years from the date of issue. You will receive renewal reminders 60 days before expiration. Some medical conditions may require annual reviews for continued eligibility."
+          answer: "Cards are valid for 2 years from the date of issue. You will receive renewal reminders 60 days before expiration. Some medical conditions may require annual reviews for continued eligibility."
         },
         {
           question: "What if I lose my card?",
