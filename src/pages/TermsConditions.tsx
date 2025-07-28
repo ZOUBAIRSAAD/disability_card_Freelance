@@ -1,4 +1,5 @@
 import { AlertTriangle, Eye, FileText, Lock, Shield } from 'lucide-react';
+import DisabilityHeroBg from '/terms_condition.jpg';
 const termsIcon =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Handshake_icon_black_circle.svg/590px-Handshake_icon_black_circle.svg.png';
 
@@ -6,20 +7,24 @@ const TermsConditions = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <FileText className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Terms & Conditions
-            </h1>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              Please read these terms and conditions carefully before using our services
-            </p>
-          </div>
+      <section className="relative py-20">
+        {/* Background image: use the disability card for a subtle backdrop */}
+        <img
+          src={DisabilityHeroBg}
+          alt="National Disability Card"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Gradient overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-uae-green via-black/40 to-uae-black opacity-80"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          Terms & Conditions
+          </h1>
+          <p className="text-xl text-gray-100 max-w-3xl mx-auto">
+          Please read these terms and conditions carefully before using our services
+          </p>
         </div>
-      </div>
-
+      </section>
       {/* Terms Content */}
       <div className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -10,14 +10,14 @@ const CardShowcase = () => {
       title: "Secure Proof of Disability for Disabled People",
       subtitle: "NATIONAL DISABILITY CARD",
       description: "The National Disability Card allows you to quickly and easily visually identify people with disabilities.",
-      validity: "Valid for three years",
+      validity: "Valid for two years",
       leftFeatures: [
         {
           title: "Personal Information",
           description: "Featuring the card holder's name."
         },
         {
-          title: "Photo Identification", 
+          title: "Photo Identification",
           description: "A full colour photo prevents misuse and provides easy visual identification of the card holder."
         },
         {
@@ -31,12 +31,12 @@ const CardShowcase = () => {
           description: "An individual UCN is assigned to every card."
         },
         {
-          title: "UAE National Flag",
-          description: "All our cards are made and exclusively issued to UAE addresses."
+          title: "National Flag",
+          description: "All our cards are made The UAE and exclusively issued to UAE addresses."
         },
         {
           title: "International Symbol of Access",
-          description: "The ISA is maintained as an international standard (ISO 7001) by the International Commission on Technology and Accessibility (ICTA), a committee of Rehabilitation International (RI)."
+          description: "The ISA is maintained as an international standar (ISO 7001) by the international Commission on Technology and Accessibility (ICTA), a committe of Rehabilitation International (RI)."
         }
       ]
     },
@@ -46,47 +46,11 @@ const CardShowcase = () => {
       title: "Recognition and Support for Dedicated Caregivers",
       subtitle: "CARERS CARD",
       description: "The Carers Card provides recognition and support for those who care for individuals with disabilities.",
-      validity: "Valid for three years",
-      leftFeatures: [
-        {
-          title: "Caregiver Information",
-          description: "Featuring the caregiver's name and credentials."
-        },
-        {
-          title: "Photo Identification",
-          description: "A full colour photo prevents misuse and provides easy visual identification of the caregiver."
-        },
-        {
-          title: "High Security Features",
-          description: "The card is protected by a number of high quality security features including a secure watermark over the card surface, precise intricate guilloche patterns and bespoke background and symbols."
-        }
-      ],
-      rightFeatures: [
-        {
-          title: "Unique Card Number",
-          description: "An individual UCN is assigned to every card."
-        },
-        {
-          title: "UAE National Flag",
-          description: "All our cards are made and exclusively issued to UAE addresses."
-        },
-        {
-          title: "Caregiver Symbol",
-          description: "International symbol representing care and support services for caregivers."
-        }
-      ]
-    },
-    {
-      name: "Customer Support Card",
-      image: "/National-Support-Card.jpg",
-      title: "Enhanced Support for Daily Activities",
-      subtitle: "CUSTOMER SUPPORT CARD",
-      description: "The Customer Support Card provides enhanced assistance and priority support for individuals requiring additional help.",
-      validity: "Valid for three years",
+      validity: "Valid for two years",
       leftFeatures: [
         {
           title: "Personal Information",
-          description: "Featuring the card holder's name and details."
+          description: "Featuring the card holder's name."
         },
         {
           title: "Photo Identification",
@@ -103,12 +67,48 @@ const CardShowcase = () => {
           description: "An individual UCN is assigned to every card."
         },
         {
-          title: "UAE National Flag",
-          description: "All our cards are made and exclusively issued to UAE addresses."
+          title: "National Flag",
+          description: "All our cards are made The UAE and exclusively issued to UAE addresses."
         },
         {
-          title: "Support Symbol",
-          description: "International symbol representing customer support and assistance services."
+          title: "International Symbol of Access",
+          description: "The ISA is maintained as an international standar (ISO 7001) by the international Commission on Technology and Accessibility (ICTA), a committe of Rehabilitation International (RI)."
+        }
+      ]
+    },
+    {
+      name: "Customer Support Card",
+      image: "/National-Support-Card.jpg",
+      title: "Enhanced Support for Daily Activities",
+      subtitle: "CUSTOMER SUPPORT CARD",
+      description: "The Customer Support Card provides enhanced assistance and priority support for individuals requiring additional help.",
+      validity: "Valid for two years",
+      leftFeatures: [
+        {
+          title: "Personal Information",
+          description: "Featuring the card holder's name."
+        },
+        {
+          title: "Photo Identification",
+          description: "A full colour photo prevents misuse and provides easy visual identification of the card holder."
+        },
+        {
+          title: "High Security Features",
+          description: "The card is protected by a number of high quality security features including a secure watermark over the card surface, precise intricate guilloche patterns and bespoke background and symbols."
+        }
+      ],
+      rightFeatures: [
+        {
+          title: "Unique Card Number",
+          description: "An individual UCN is assigned to every card."
+        },
+        {
+          title: "National Flag",
+          description: "All our cards are made The UAE and exclusively issued to UAE addresses."
+        },
+        {
+          title: "International Symbol of Access",
+          description: "The ISA is maintained as an international standar (ISO 7001) by the international Commission on Technology and Accessibility (ICTA), a committe of Rehabilitation International (RI)."
         }
       ]
     }

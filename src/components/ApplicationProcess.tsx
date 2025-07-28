@@ -7,22 +7,29 @@ const ApplicationProcess = () => {
     {
       number: "1",
       icon: CreditCard,
-      title: "Apply and pay for your card online",
-      description: "Fill in our simple online form in just a few minutes, and pay securely online.",
+      title: "Apply Online",
+      description: "Complete the simple application form on our website.",
       color: "text-blue-600"
     },
     {
       number: "2", 
       icon: Clock,
-      title: "Same-day application decision",
-      description: "We review your application and supporting documents on the same day, often within the hour. If your application is unsuccessful, we will refund you immediately.",
+      title: "Submit Documentation",
+      description: "Provide the necessary documentation to confirm your eligibility (e.g., proof of disability, carer status and Employment Verification Letter for customer support card).",
       color: "text-blue-600"
     },
     {
       number: "3",
       icon: Truck,
-      title: "Tracked delivery",
-      description: "We track your delivery with Royal Mail to ensure your card arrives safely. Your card will typically arrive within 5-10 days.",
+      title: "Receive Your Card",
+      description: "Once your application is processed, we will mail your personalized Disability ID or Carer Card or Customer Support Card to your address.",
+      color: "text-blue-600"
+    },
+    {
+      number: "4",
+      icon: ArrowRight,
+      title: "Start Enjoying Your Benefits",
+      description: "Use your card to unlock discounts, priority services, and more, at hundreds of participating partners across the UAE.",
       color: "text-blue-600"
     }
   ];

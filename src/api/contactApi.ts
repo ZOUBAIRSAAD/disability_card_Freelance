@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://api-disability-card.runasp.net/api';
+const API_BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api';
 
 export interface ContactSubmissionRequest {
   fullName: string;

@@ -23,8 +23,8 @@ const Header = () => {
         { label: 'About Us', path: '/about' },
         { label: 'CEO Word', path: '/ceo-word' },
         { label: 'Our Services', path: '/our-services' },
-        { label: 'Terms and Conditions', path: '/terms-conditions' }
-      ]
+        { label: 'Terms and Conditions', path: '/terms-conditions' },
+      ],
     },
     {
       label: 'Benefits',
@@ -32,41 +32,44 @@ const Header = () => {
         { label: 'Disabilities Card', path: '/disabilities-card' },
         { label: 'Carers Card', path: '/carers-card' },
         { label: 'Customer Support Card', path: '/customer-support-card' },
-        { label: 'Frequently Asked Questions (FAQ)', path: '/faq' }
-      ]
+        { label: 'Frequently Asked Questions (FAQ)', path: '/faq' },
+      ],
     },
     {
       label: 'Partners',
       dropdown: [
         { label: 'Partners', path: '/partners' },
-        { label: 'Privacy Policy', path: '/privacy-policy' }
-      ]
+        { label: 'Privacy Policy', path: '/privacy-policy' },
+      ],
     },
     {
       label: 'APPLY NOW',
       dropdown: [
         { label: 'Disabilities Card', path: '/apply-disabilities' },
         { label: 'Carers Card', path: '/apply-carers' },
-        { label: 'Customer Support Card', path: '/apply-customer-support' }
-      ]
+        { label: 'Customer Support Card', path: '/apply-customer-support' },
+      ],
     },
     {
       label: 'Lanyard',
       dropdown: [
-        { label: 'Verified Global Disability Lanyard', path: '/verified-lanyard' }
-      ]
+        {
+          label: 'Verified Global Disability Lanyard',
+          path: '/verified-lanyard',
+        },
+      ],
     },
     {
       label: 'Renew',
       dropdown: [
         { label: 'Disabilities Card', path: '/renew-disabilities' },
         { label: 'Carers Card', path: '/renew-carers' },
-        { label: 'Customer Support Card', path: '/renew-customer-support' }
-      ]
+        { label: 'Customer Support Card', path: '/renew-customer-support' },
+      ],
     },
     { label: 'Donate Now', path: '/donate' },
     { label: 'Become a Franchise', path: '/franchise' },
-    { label: 'Contact Us', path: '/contact' }
+    { label: 'Contact Us', path: '/contact' },
   ];
 
   const handleDropdownToggle = (label: string) => {
@@ -90,7 +93,9 @@ const Header = () => {
           </div>
           <div className="hidden md:block">
             <span className="flex items-center space-x-2">
-              <span>🇦🇪</span>
+              <span role="img" aria-label="UAE flag">
+                🇦🇪
+              </span>
               <span>Serving the UAE Community</span>
             </span>
           </div>
@@ -98,16 +103,18 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-lg' : 'bg-white'
-      }`}>
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'bg-white shadow-lg' : 'bg-white'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
-              <img 
-                src="/Logo_VF.png" 
-                alt=" NDAid Logo" 
+              <img
+                src="/Logo_VF.png"
+                alt="NDAid Logo"
                 className="h-20 w-auto group-hover:scale-105 transition-transform duration-300"
               />
               <div>
@@ -121,22 +128,25 @@ const Header = () => {
               {navigationItems.map((item) => (
                 <div key={item.label} className="relative group">
                   {item.dropdown ? (
+                    // Wrapper includes both the button and the submenu.
                     <div
                       className="relative"
                       onMouseEnter={() => setActiveDropdown(item.label)}
                       onMouseLeave={() => setActiveDropdown(null)}
                     >
-                      <button className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-300 rounded-lg ${
-                        item.label === 'APPLY NOW' 
-                          ? 'bg-uae-red text-white hover:bg-red-700' 
-                          : 'text-gray-700 hover:text-uae-green hover:bg-gray-50'
-                      }`}>
+                      <button
+                        className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-300 rounded-lg ${
+                          item.label === 'APPLY NOW'
+                            ? 'bg-uae-red text-white hover:bg-red-700'
+                            : 'text-gray-700 hover:text-uae-green hover:bg-gray-50'
+                        }`}
+                      >
                         {item.label}
                         <ChevronDown className="ml-1 w-4 h-4" />
                       </button>
-                      
+
                       {activeDropdown === item.label && (
-                        <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                        <div className="absolute left-0 top-full pt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
                           {item.dropdown.map((subItem) => (
                             <Link
                               key={subItem.path}
@@ -180,9 +190,11 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`lg:hidden transition-all duration-300 overflow-hidden ${
-          isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-        }`}>
+        <div
+          className={`lg:hidden transition-all duration-300 overflow-hidden ${
+            isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
           <div className="px-4 py-2 bg-gray-50 border-t">
             {navigationItems.map((item) => (
               <div key={item.label} className="py-2">
@@ -191,15 +203,17 @@ const Header = () => {
                     <button
                       onClick={() => handleDropdownToggle(item.label)}
                       className={`flex items-center justify-between w-full px-3 py-2 text-base font-medium transition-colors duration-300 rounded-lg ${
-                        item.label === 'APPLY NOW' 
-                          ? 'bg-uae-red text-white' 
+                        item.label === 'APPLY NOW'
+                          ? 'bg-uae-red text-white'
                           : 'text-gray-700 hover:text-uae-green hover:bg-gray-100'
                       }`}
                     >
                       {item.label}
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                        activeDropdown === item.label ? 'rotate-180' : ''
-                      }`} />
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          activeDropdown === item.label ? 'rotate-180' : ''
+                        }`}
+                      />
                     </button>
                     {activeDropdown === item.label && (
                       <div className="mt-2 ml-4 space-y-1">
@@ -207,7 +221,10 @@ const Header = () => {
                           <Link
                             key={subItem.path}
                             to={subItem.path}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              setActiveDropdown(null);
+                            }}
                             className="block px-3 py-2 text-sm text-gray-600 hover:text-uae-green hover:bg-gray-100 rounded-lg transition-colors duration-200"
                           >
                             {subItem.label}

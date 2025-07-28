@@ -1,90 +1,154 @@
-import { ArrowRight, Award, CheckCircle, DollarSign, Globe, Target, TrendingUp, Users } from 'lucide-react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Globe,
+  Users,
+  Award,
+  CheckCircle,
+  UserPlus,
+  Handshake,
+  ArrowRight,
+} from 'lucide-react';
+import DisabilityHeroBg from '/franchise.jpg';
+/**
+ * BecomeFranchise page
+ *
+ * This page invites potential partners to join the National Disability Aid (NDAid)
+ * network as franchisees. It uses the exact wording from the organisation’s
+ * documentation to describe why someone should become a franchisee, what makes
+ * NDAid unique, what qualities are sought in a partner, and how to apply.
+ */
+const BecomeFranchise: React.FC = () => {
+  // Why Franchise section content
+  const whyFranchise = [
+    {
+      title: 'Why become a National Disability Aid franchise?',
+      body: (
+        <>
+          <p className="mb-4 text-gray-700">
+            The <strong>National Disability Aid</strong> have experienced rapid
+            growth, with a wide range of organisations recognising their value
+            and adopting them to support both customers and employees. Our
+            partners span across retail, travel and tourism, education (schools,
+            colleges, universities), healthcare, government agencies, sports
+            clubs, theatres, financial institutions and more.
+          </p>
+          <p className="text-gray-700">
+            As a <strong>NDAid Franchisee</strong>, you’ll be part of a globally
+            growing initiative that is making a real difference. You’ll benefit
+            from:
+          </p>
+          <ul className="list-disc list-inside mt-4 space-y-2 text-gray-700">
+            <li>A proven, socially impactful brand with international recognition</li>
+            <li>Access to training, resources, and marketing materials</li>
+            <li>
+              Opportunities to connect with businesses and organisations across multiple
+              sectors
+            </li>
+            <li>The chance to create inclusive communities in your region</li>
+            <li>Ongoing support from our experienced team</li>
+          </ul>
+          <p className="mt-4 text-gray-700">
+            Join us in shaping a more inclusive, understanding world one card at a time.
+          </p>
+        </>
+      ),
+    },
+  ];
 
-const BecomeFranchise = () => {
-  const benefits = [
+  // Features that set NDAid apart
+  const uniqueFeatures = [
     {
       icon: Globe,
-      title: "Global Expansion",
-      description: "Be part of expanding  NDAid services worldwide with proven business model"
-    },
-    {
-      icon: TrendingUp,
-      title: "Growing Market",
-      description: "Tap into the expanding disability services market with increasing demand"
+      title: 'Globally Recognised and Protected Brand',
+      description: (
+        <>
+          As a trusted and internationally recognised symbol for non-visible and
+          visible disabilities, the <strong>National Disability Aid (NDAid)</strong> enjoy
+          strong brand awareness and credibility. Our name is protected by
+          international trademarks, giving franchisees market exclusivity and the
+          confidence of operating under a respected identity.
+        </>
+      ),
     },
     {
       icon: Users,
-      title: "Community Impact",
-      description: "Make a meaningful difference in your local disability community"
+      title: 'Extensive Cross‑Sector Expertise',
+      description: (
+        <>
+          Our work touches every sector because disability exists in every part of life.
+          The <strong>NDAid</strong> has been successfully implemented across a wide
+          range of industries, including transport, travel and tourism, government
+          bodies, retail, financial services, manufacturing, education, leisure and
+          sports. This deep, hands‑on experience equips our franchise partners with
+          the tools and insights needed to succeed across multiple sectors.
+        </>
+      ),
+    },
+    {
+      icon: Handshake,
+      title: 'A Long‑Term Partnership for Success',
+      description: (
+        <>
+          When you join the <strong>National Disability Aid (NDAid)</strong> network,
+          you’re not alone. Our dedicated team is here to support you at every stage
+          of your journey. You’ll be partnered with a personal NDAid business mentor
+          and receive assistance in launching and managing your regional NDAid
+          website. We also help tailor products and services to reflect the unique
+          needs of individuals with visible and non‑visible disabilities in your
+          local area.
+        </>
+      ),
     },
     {
       icon: Award,
-      title: "Established Brand",
-      description: "Leverage our recognized brand and proven track record of success"
-    }
+      title: 'A Proven Business Model',
+      description: (
+        <>
+          With the backing of a well‑established, internationally recognised brand,
+          you’ll benefit from a tested and scalable model. Supported by our Head
+          Office team, you’ll be equipped to grow your business by delivering NDAid
+          services and encouraging local organisations to become NDAid members.
+        </>
+      ),
+    },
+    {
+      icon: UserPlus,
+      title: 'Comprehensive Ongoing Support',
+      description: (
+        <>
+          From day one, you’ll have access to everything you need to thrive including
+          a complete training programme for onboarding partner organisations,
+          marketing support, and ready‑to‑use promotional materials. We work
+          alongside you to raise awareness of NDAid in your region, building both
+          national recognition and strong local engagement.
+        </>
+      ),
+    },
   ];
 
-  const requirements = [
-    "Passion for disability advocacy and community service",
-    "Business experience or willingness to learn",
-    "Financial capacity to invest in franchise operations",
-    "Commitment to  NDAid values and service standards",
-    "Local market knowledge and community connections",
-    "Ability to meet franchise territory requirements"
-  ];
-
-  const support = [
-    {
-      category: "Training & Education",
-      items: [
-        "Comprehensive franchise training program",
-        "Ongoing professional development",
-        "Disability services certification",
-        "Business operations training"
-      ]
-    },
-    {
-      category: "Marketing & Branding",
-      items: [
-        "Complete marketing toolkit",
-        "Brand guidelines and materials",
-        "Digital marketing support",
-        "Local advertising assistance"
-      ]
-    },
-    {
-      category: "Operations Support",
-      items: [
-        "Standard operating procedures",
-        "Technology platform access",
-        "Quality assurance programs",
-        "Regular business reviews"
-      ]
-    },
-    {
-      category: "Ongoing Assistance",
-      items: [
-        "Dedicated franchise support team",
-        "Regular training updates",
-        "Peer network access",
-        "Performance monitoring tools"
-      ]
-    }
+  // Franchisee requirements
+  const idealFranchisee = [
+    'A genuine commitment to inclusion',
+    'Passion for improving the lives of people with visible and non‑visible disabilities, their carers, and those in customer‑facing roles. Experience in the charity or care sector is a strong advantage.',
+    'Strong marketing skills – Confidence in promoting the brand across digital and traditional media platforms.',
+    'Proven networking and sales ability. Experience working across both B2B and B2C channels, with the ability to build lasting relationships.',
+    'Presence in an unrepresented region. You should be based in a country or region where NDAid is not yet established.',
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+{/*       {/* Hero Section }
       <section className="bg-gradient-to-br from-uae-green to-green-700 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Become a Global Franchise Partner
+              Become a National Disability Aid Franchise
             </h1>
             <p className="text-xl md:text-2xl text-green-100 mb-8 leading-relaxed">
-              Join our mission to expand National Disability Aid Cards  ( NDAid) services 
-              worldwide. Help us create inclusive communities while building a successful business.
+              We’re looking for partners to help expand the <strong>NDAid</strong>
+              across the globe! Join our mission and create inclusive communities
+              while building a successful business.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -94,35 +158,93 @@ const BecomeFranchise = () => {
                 Apply for Franchise
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
-              <button className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-uae-green transition-all duration-300">
-                Download Information Pack
-              </button>
+              <a
+                href="mailto:support@ndaid.help"
+                className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-uae-green transition-all duration-300"
+              >
+                Email Our Team
+              </a>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Opportunity Overview */}
+      </section> */}
+      {/* Hero Section with new background image */}
+      <div className="relative text-white py-20">
+        {/* Abu Dhabi skyline with UAE flag */}
+        <img
+          src={DisabilityHeroBg}
+          alt="National Disability Card"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Gradient overlay for readability and brand colours */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-black/40 to-green-700 opacity-80"></div>
+        {/* Hero content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Handshake className="w-16 h-16 mx-auto mb-6" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          Become a National Disability Aid Franchise
+          </h1>
+          <p className="text-xl text-green-100 max-w-3xl mx-auto">
+          We’re looking for partners to help expand the <strong>NDAid</strong>
+              across the globe! Join our mission and create inclusive communities
+              while building a successful business.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/contact"
+                className="inline-flex items-center px-8 py-4 bg-white text-uae-green font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
+              >
+                Apply for Franchise
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+              <a
+                href="mailto:support@ndaid.help"
+                className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-uae-green transition-all duration-300"
+              >
+                Email Our Team
+              </a>
+            </div>
+        </div>
+      </div>
+      {/* Why Franchise Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">The Franchise Opportunity</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Partner with us to bring essential disability services to communities worldwide 
-              while building a sustainable and impactful business.
-            </p>
-          </div>
+          {whyFranchise.map((section, index) => (
+            <div key={index} className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+                {section.title}
+              </h2>
+              <div className="max-w-4xl mx-auto text-left text-lg leading-relaxed">
+                {section.body}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.icon;
+      {/* What Sets Us Apart Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+            What Sets Us Apart
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {uniqueFeatures.map((feature, idx) => {
+              const IconComponent = feature.icon;
               return (
-                <div key={index} className="text-center group hover:transform hover:scale-105 transition-all duration-300">
-                  <div className="bg-uae-green/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-uae-green transition-all duration-300">
-                    <IconComponent className="w-8 h-8 text-uae-green group-hover:text-white transition-colors duration-300" />
+                <div
+                  key={idx}
+                  className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex items-center mb-4">
+                    <IconComponent className="w-8 h-8 text-uae-green mr-3" />
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      {feature.title}
+                    </h3>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{benefit.title}</h3>
-                  <p className="text-gray-600">{benefit.description}</p>
+                  <p className="text-gray-700 leading-relaxed text-sm">
+                    {feature.description}
+                  </p>
                 </div>
               );
             })}
@@ -130,243 +252,50 @@ const BecomeFranchise = () => {
         </div>
       </section>
 
-      {/* Market Opportunity */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Growing Market Opportunity</h2>
-              <p className="text-lg text-gray-600 mb-8">
-                The global disability services market is experiencing unprecedented growth, 
-                driven by increasing awareness, aging populations, and supportive legislation.
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <div className="bg-uae-green text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 font-bold">
-                    1.3B
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Global Disability Population</h4>
-                    <p className="text-gray-600 text-sm">People worldwide living with disabilities</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <div className="bg-uae-red text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 font-bold">
-                    15%
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Market Growth Rate</h4>
-                    <p className="text-gray-600 text-sm">Annual growth in disability services sector</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <div className="bg-uae-black text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 font-bold">
-                    $13T
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Economic Impact</h4>
-                    <p className="text-gray-600 text-sm">Annual global disability economy</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Choose  NDAid Franchise?</h3>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Proven business model with track record of success</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Comprehensive training and ongoing support</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Protected territory with exclusive rights</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Strong brand recognition and marketing support</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Multiple revenue streams and growth opportunities</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Requirements Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Franchise Requirements</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're looking for passionate partners who share our commitment to creating 
-              inclusive communities and supporting individuals with disabilities.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Ideal Franchise Partner</h3>
-              <ul className="space-y-4">
-                {requirements.map((requirement, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="bg-uae-green w-6 h-6 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0">
-                      <span className="text-white text-sm font-bold">{index + 1}</span>
-                    </div>
-                    <span className="text-gray-700">{requirement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="space-y-8">
-              <div className="bg-uae-green/10 rounded-xl p-6">
-                <div className="flex items-center mb-4">
-                  <DollarSign className="w-8 h-8 text-uae-green mr-3" />
-                  <h4 className="text-xl font-bold text-gray-900">Investment Range</h4>
-                </div>
-                <p className="text-gray-700 mb-4">
-                  Initial investment varies by territory size and market conditions. 
-                  Financing options available for qualified candidates.
-                </p>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Franchise fee: Contact for details</li>
-                  <li>• Working capital requirements</li>
-                  <li>• Equipment and setup costs</li>
-                  <li>• Marketing launch budget</li>
-                </ul>
-              </div>
-
-              <div className="bg-blue-50 rounded-xl p-6">
-                <div className="flex items-center mb-4">
-                  <Target className="w-8 h-8 text-blue-600 mr-3" />
-                  <h4 className="text-xl font-bold text-gray-900">Territory Options</h4>
-                </div>
-                <p className="text-gray-700 mb-4">
-                  Multiple territory sizes available to match your investment capacity 
-                  and growth ambitions.
-                </p>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• City-based territories</li>
-                  <li>• Regional coverage areas</li>
-                  <li>• National master franchise opportunities</li>
-                  <li>• Population-based territory sizing</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Support Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Comprehensive Franchise Support</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide extensive support to ensure your success from day one and throughout 
-              your franchise journey.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {support.map((category, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <div className="w-3 h-3 bg-uae-green rounded-full mr-3"></div>
-                  {category.category}
-                </h3>
-                <ul className="space-y-3">
-                  {category.items.map((item, itemIndex) => (
-                    <li key={itemIndex} className="flex items-start">
-                      <CheckCircle className="w-5 h-5 text-uae-green mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Application Process */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Application Process</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our streamlined application process is designed to identify the right partners 
-              and ensure mutual success.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              {
-                step: "1",
-                title: "Initial Inquiry",
-                description: "Submit your interest and receive information pack"
-              },
-              {
-                step: "2",
-                title: "Application Review",
-                description: "Complete detailed application and financial qualification"
-              },
-              {
-                step: "3",
-                title: "Discovery Process",
-                description: "Meet our team and learn about the opportunity"
-              },
-              {
-                step: "4",
-                title: "Franchise Agreement",
-                description: "Finalize terms and begin your franchise journey"
-              }
-            ].map((process, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-uae-green text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-                  {process.step}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{process.title}</h3>
-                <p className="text-gray-600">{process.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-uae-green">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to Make a Difference?
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            What Are We Looking For?
           </h2>
-          <p className="text-xl text-green-100 mb-8 max-w-3xl mx-auto">
-            Join our global network of franchise partners and help us expand  NDAid services 
-            to communities worldwide. Together, we can create a more inclusive world.
+          <div className="max-w-4xl mx-auto">
+            <ul className="space-y-4 text-gray-700 text-base leading-relaxed">
+              {idealFranchisee.map((req, index) => (
+                <li key={index} className="flex items-start">
+                  <CheckCircle className="w-6 h-6 text-uae-green mr-3 mt-1 flex-shrink-0" />
+                  <span>{req}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Ready to Apply Section */}
+      <section className="py-20 bg-uae-green text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Apply?
+          </h2>
+          <p className="max-w-3xl mx-auto text-lg mb-8">
+            We’d love to hear from you! To apply, simply send us an email, and a
+            member of our Engagement Team will be in touch to guide you through
+            the next steps.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/contact"
+            <a
+              href="mailto:support@ndaid.help"
               className="inline-flex items-center px-8 py-4 bg-white text-uae-green font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
             >
-              Start Your Application
+              Email Us
               <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <button className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-uae-green transition-all duration-300">
+            </a>
+            <Link
+              to="/contact"
+              className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-uae-green transition-all duration-300"
+            >
               Schedule a Call
-            </button>
+            </Link>
           </div>
         </div>
       </section>

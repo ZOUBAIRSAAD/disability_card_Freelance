@@ -23,7 +23,7 @@ const PartnersCarousel: React.FC = () => {
     // Fetch partners from API
     const fetchPartners = async () => {
       try {
-        const response = await fetch('http://api-disability-card.runasp.net/api/partners');
+        const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/partners');
         if (response.ok) {
           const data = await response.json();
           // Take only first 8 partners for the carousel
@@ -120,7 +120,7 @@ const PartnersCarousel: React.FC = () => {
                   style={{ width: '8rem', height: '4.5rem' }}
                 >
                   <img
-                    src={partner.logo.startsWith('http') ? partner.logo : `http://api-disability-card.runasp.net${partner.logo}`}
+                    src={partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev${partner.logo}`}
                     alt={partner.name}
                     className="h-full w-full object-contain"
                     onError={(e) => {
