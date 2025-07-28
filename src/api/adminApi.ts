@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5253/api';
+const API_BASE_URL = 'http://api-disability-card.runasp.net/api';
 
 export interface LoginRequest {
   username: string;
@@ -26,8 +26,49 @@ export interface AdminProfile {
   lastLoginAt?: string;
 }
 
+export interface Partner {
+  id: number;
+  name: string;
+  logo: string | null;
+  category: string;
+  discount: string;
+  location: string | null;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CreatePartnerRequest {
+  name: string;
+  category: string;
+  discount: string;
+  location?: string;
+  description?: string;
+  logo?: File;
+}
+
+export interface UpdatePartnerRequest {
+  name?: string;
+  category?: string;
+  discount?: string;
+  location?: string;
+  description?: string;
+  logo?: File;
+}
+
+export interface PartnersResponse {
+  data: Partner[];
+  totalCount: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface DashboardStats {
   totalApplications: number;
+  totalContactSubmissions: number;
+  newContactSubmissions: number;
   disabilityApplications: {
     total: number;
     pending: number;
@@ -126,6 +167,19 @@ export interface CustomerSupportApplication {
   emergencyContactPhone: string;
   applicationStatus: string;
   createdAt: string;
+}
+
+export interface ContactSubmission {
+  id: number;
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  cardTypeOfInterest?: string;
+  subject: string;
+  message: string;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 class AdminAPI {
@@ -356,6 +410,196 @@ class AdminAPI {
   isAuthenticated(): boolean {
     const token = localStorage.getItem('adminToken');
     return !!token;
+  }
+
+  // Partner Management Methods
+  async getPartners(page: number = 1, pageSize: number = 10, category?: string): Promise<PartnersResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    });
+    
+    if (category) {
+      params.append('category', category);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/partners?${params}`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch partners');
+    }
+
+    return response.json();
+  }
+
+  async getPartner(id: number): Promise<Partner> {
+    const response = await fetch(`${API_BASE_URL}/admin/partners/${id}`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch partner');
+    }
+
+    return response.json();
+  }
+
+  async createPartner(partnerData: CreatePartnerRequest): Promise<Partner> {
+    const formData = new FormData();
+    formData.append('name', partnerData.name);
+    formData.append('category', partnerData.category);
+    formData.append('discount', partnerData.discount);
+    
+    if (partnerData.location) {
+      formData.append('location', partnerData.location);
+    }
+    
+    if (partnerData.description) {
+      formData.append('description', partnerData.description);
+    }
+    
+    if (partnerData.logo) {
+      formData.append('logo', partnerData.logo);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/partners`, {
+      method: 'POST',
+      headers: this.getAuthHeadersForUpload(),
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create partner');
+    }
+
+    const result = await response.json();
+    return result.partner;
+  }
+
+  async updatePartner(id: number, partnerData: UpdatePartnerRequest): Promise<Partner> {
+    const formData = new FormData();
+    
+    if (partnerData.name) {
+      formData.append('name', partnerData.name);
+    }
+    
+    if (partnerData.category) {
+      formData.append('category', partnerData.category);
+    }
+    
+    if (partnerData.discount) {
+      formData.append('discount', partnerData.discount);
+    }
+    
+    if (partnerData.location) {
+      formData.append('location', partnerData.location);
+    }
+    
+    if (partnerData.description) {
+      formData.append('description', partnerData.description);
+    }
+    
+    if (partnerData.logo) {
+      formData.append('logo', partnerData.logo);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/partners/${id}`, {
+      method: 'PUT',
+      headers: this.getAuthHeadersForUpload(),
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update partner');
+    }
+
+    const result = await response.json();
+    return result.partner;
+  }
+
+  async deletePartner(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/admin/partners/${id}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete partner');
+    }
+  }
+
+  async getPartnerCategories(): Promise<string[]> {
+    const response = await fetch(`${API_BASE_URL}/admin/partner-categories`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch partner categories');
+    }
+
+    return response.json();
+  }
+
+  // Contact Submissions
+  async getContactSubmissions(page = 1, pageSize = 10, status?: string) {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    });
+    
+    if (status) {
+      params.append('status', status);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/contact-submissions?${params}`, {
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact submissions');
+    }
+
+    return response.json();
+  }
+
+  async getContactSubmissionById(id: number): Promise<ContactSubmission> {
+    const response = await fetch(`${API_BASE_URL}/admin/contact-submissions/${id}`, {
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact submission');
+    }
+
+    return response.json();
+  }
+
+  async updateContactSubmissionStatus(id: number, status: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/admin/contact-submissions/${id}/status`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update contact submission status');
+    }
+  }
+
+  async deleteContactSubmission(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/admin/contact-submissions/${id}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete contact submission');
+    }
   }
 }
 

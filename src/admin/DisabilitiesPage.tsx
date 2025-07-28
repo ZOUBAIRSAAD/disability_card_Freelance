@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Filter, Eye, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock, Eye, Filter, Search, XCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { adminAPI, DisabilityApplication } from '../api/adminApi';
 
 const DisabilitiesPage: React.FC = () => {
@@ -154,7 +154,7 @@ const DisabilitiesPage: React.FC = () => {
                         {doc.filePath && (doc.fileType.includes('image') || doc.fileType.includes('jpg') || doc.fileType.includes('png')) && (
                           <div className="mt-3">
                             <img 
-                              src={`http://localhost:5253${doc.filePath}`} 
+                              src={`http://api-disability-card.runasp.net${doc.filePath}`} 
                               alt={`Document ${index + 1}`}
                               className="w-full h-48 object-cover rounded border"
                             />

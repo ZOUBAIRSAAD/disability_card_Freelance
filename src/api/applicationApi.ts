@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5253/api';
+const API_BASE_URL = 'http://api-disability-card.runasp.net/api';
 
 export interface DisabilityApplicationRequest {
   firstName: string;
@@ -17,6 +17,7 @@ export interface DisabilityApplicationRequest {
   emergencyContactName: string;
   emergencyContactPhone: string;
   medicalDocuments?: File[];
+  profilePicture?: File;
 }
 
 export interface CarersApplicationRequest {
@@ -36,6 +37,8 @@ export interface CarersApplicationRequest {
   caregivingExperience: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
+  supportingDocuments?: File[];
+  profilePicture?: File;
 }
 
 export interface CustomerSupportApplicationRequest {
@@ -55,6 +58,7 @@ export interface CustomerSupportApplicationRequest {
   specialRequirements: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
+  profilePicture?: File;
 }
 
 export interface ApplicationResponse {
@@ -101,36 +105,33 @@ class ApplicationAPI {
   }
 
   async submitDisabilityApplication(application: DisabilityApplicationRequest): Promise<ApplicationResponse> {
-    // First, submit the application data without files
-    const { medicalDocuments, ...applicationData } = application;
-    
-    // Transform field names to PascalCase for .NET backend
-    const transformedData = {
-      FirstName: applicationData.firstName,
-      LastName: applicationData.lastName,
-      DateOfBirth: applicationData.dateOfBirth,
-      Gender: applicationData.gender,
-      Nationality: applicationData.nationality,
-      EmiratesId: applicationData.emiratesId,
-      PhoneNumber: applicationData.phoneNumber,
-      Email: applicationData.email,
-      Address: applicationData.address,
-      City: applicationData.city,
-      Emirate: applicationData.emirate,
-      DisabilityType: applicationData.disabilityType,
-      DisabilityDescription: applicationData.disabilityDescription,
-      EmergencyContactName: applicationData.emergencyContactName,
-      EmergencyContactPhone: applicationData.emergencyContactPhone
+    // First, submit the application data as JSON (without files)
+    const applicationData = {
+      firstName: application.firstName,
+      lastName: application.lastName,
+      dateOfBirth: application.dateOfBirth,
+      gender: application.gender,
+      nationality: application.nationality,
+      emiratesId: application.emiratesId,
+      phoneNumber: application.phoneNumber,
+      email: application.email,
+      address: application.address,
+      city: application.city,
+      emirate: application.emirate,
+      disabilityType: application.disabilityType,
+      disabilityDescription: application.disabilityDescription,
+      emergencyContactName: application.emergencyContactName,
+      emergencyContactPhone: application.emergencyContactPhone,
     };
-    
+
     const response = await this.makeRequest<ApplicationResponse>('/DisabilityApplication', {
       method: 'POST',
-      body: JSON.stringify(transformedData),
+      body: JSON.stringify(applicationData),
     });
 
-    // If there are medical documents, upload them separately
-    if (medicalDocuments && medicalDocuments.length > 0) {
-      for (const file of medicalDocuments) {
+    // If files are provided, upload them separately
+    if (application.medicalDocuments && application.medicalDocuments.length > 0) {
+      for (const file of application.medicalDocuments) {
         await this.uploadMedicalDocument(response.id, file);
       }
     }
@@ -154,56 +155,83 @@ class ApplicationAPI {
   }
 
   async submitCarersApplication(application: CarersApplicationRequest): Promise<ApplicationResponse> {
-    // Transform field names to PascalCase for .NET backend
-    const transformedData = {
-      FirstName: application.firstName,
-      LastName: application.lastName,
-      DateOfBirth: application.dateOfBirth,
-      Gender: application.gender,
-      Nationality: application.nationality,
-      EmiratesId: application.emiratesId,
-      PhoneNumber: application.phoneNumber,
-      Email: application.email,
-      Address: application.address,
-      City: application.city,
-      Emirate: application.emirate,
-      CareRecipientName: application.careRecipientName,
-      RelationshipToRecipient: application.relationshipToRecipient,
-      CaregivingExperience: application.caregivingExperience,
-      EmergencyContactName: application.emergencyContactName,
-      EmergencyContactPhone: application.emergencyContactPhone
+    let supportingDocumentNames: string[] = [];
+
+    // First, upload supporting documents if any
+    if (application.supportingDocuments && application.supportingDocuments.length > 0) {
+      supportingDocumentNames = await this.uploadCarersSupportingDocuments(application.supportingDocuments);
+    }
+
+    // Submit the application data as JSON with supporting document names
+    const applicationData = {
+      firstName: application.firstName,
+      lastName: application.lastName,
+      dateOfBirth: application.dateOfBirth,
+      gender: application.gender,
+      nationality: application.nationality,
+      emiratesId: application.emiratesId,
+      phoneNumber: application.phoneNumber,
+      email: application.email,
+      address: application.address,
+      city: application.city,
+      emirate: application.emirate,
+      careRecipientName: application.careRecipientName,
+      relationshipToRecipient: application.relationshipToRecipient,
+      caregivingExperience: application.caregivingExperience,
+      emergencyContactName: application.emergencyContactName,
+      emergencyContactPhone: application.emergencyContactPhone,
+      supportingDocuments: supportingDocumentNames,
     };
 
     return this.makeRequest<ApplicationResponse>('/CarersApplication', {
       method: 'POST',
-      body: JSON.stringify(transformedData),
+      body: JSON.stringify(applicationData),
     });
   }
 
+  async uploadCarersSupportingDocuments(files: File[]): Promise<string[]> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+
+    const response = await fetch(`${API_BASE_URL}/CarersApplication/upload-documents`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error || 'File upload failed');
+    }
+
+    return response.json();
+  }
+
   async submitCustomerSupportApplication(application: CustomerSupportApplicationRequest): Promise<ApplicationResponse> {
-    // Transform field names to PascalCase for .NET backend
-    const transformedData = {
-      FirstName: application.firstName,
-      LastName: application.lastName,
-      DateOfBirth: application.dateOfBirth,
-      Gender: application.gender,
-      Nationality: application.nationality,
-      EmiratesId: application.emiratesId,
-      PhoneNumber: application.phoneNumber,
-      Email: application.email,
-      Address: application.address,
-      City: application.city,
-      Emirate: application.emirate,
-      SupportType: application.supportType,
-      SupportDescription: application.supportDescription,
-      SpecialRequirements: application.specialRequirements,
-      EmergencyContactName: application.emergencyContactName,
-      EmergencyContactPhone: application.emergencyContactPhone
+    // Submit the application data as JSON (profile pictures are not handled in the current backend)
+    const applicationData = {
+      firstName: application.firstName,
+      lastName: application.lastName,
+      dateOfBirth: application.dateOfBirth,
+      gender: application.gender,
+      nationality: application.nationality,
+      emiratesId: application.emiratesId,
+      phoneNumber: application.phoneNumber,
+      email: application.email,
+      address: application.address,
+      city: application.city,
+      emirate: application.emirate,
+      supportType: application.supportType,
+      supportDescription: application.supportDescription,
+      specialRequirements: application.specialRequirements,
+      emergencyContactName: application.emergencyContactName,
+      emergencyContactPhone: application.emergencyContactPhone,
     };
 
     return this.makeRequest<ApplicationResponse>('/CustomerSupportApplication', {
       method: 'POST',
-      body: JSON.stringify(transformedData),
+      body: JSON.stringify(applicationData),
     });
   }
 }

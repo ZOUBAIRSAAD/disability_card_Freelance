@@ -1,74 +1,6 @@
-import React, { useState } from 'react';
-import { Handshake } from 'lucide-react';
-import { Search } from 'lucide-react';
-
-const partnerData = [
-  {
-    name: 'Disneyland Paris',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Disneyland_Paris_logo.svg/640px-Disneyland_Paris_logo.svg.png',
-    discount: '25%',
-    offer: '25% off your Park Ticket',
-    category: 'Days Out',
-  },
-  {
-    name: 'Warner Bros. Studio Tour',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Warner_Bros_logo.svg/640px-Warner_Bros_logo.svg.png',
-    discount: '',
-    offer: 'Free carer ticket to Warner Bros. Studio Tour',
-    category: 'Leisure & Entertainment',
-  },
-  {
-    name: 'No7 Beauty',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/No7Brand.svg/640px-No7Brand.svg.png',
-    discount: '22%',
-    offer: 'Exclusive 22% off',
-    category: 'Health & Beauty',
-  },
-  {
-    name: 'Odeon',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Odeon_logo.svg/640px-Odeon_logo.svg.png',
-    discount: '',
-    offer: 'Complimentary carer ticket',
-    category: 'Leisure & Entertainment',
-  },
-  {
-    name: 'Better',
-    image: '', // No reliable public image available, so we display text only
-    discount: '',
-    offer:
-      'Discounted Gym Membership for National Disability Cardholders',
-    category: 'Sports & Fitness',
-  },
-  {
-    name: 'Iceland',
-    image:
-      'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Iceland_Foods.svg/640px-Iceland_Foods.svg.png',
-    discount: '5%',
-    offer: '£5 off when you spend £45+ online',
-    category: 'Food & Drink',
-  },
-  {
-    name: 'LEGOLAND',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Legoland_logo.svg/640px-Legoland_logo.svg.png',
-    discount: '',
-    offer: 'Free carer ticket',
-    category: 'Days Out',
-  },
-];
-
-const categories = [
-  'All',
-  'Days Out',
-  'Leisure & Entertainment',
-  'Health & Beauty',
-  'Sports & Fitness',
-  'Food & Drink',
-];
+import { Handshake, Search } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Partner, partnersApi } from '../api/partnersApi';
 
 const Partners: React.FC = () => {
   const stats = [
@@ -78,6 +10,12 @@ const Partners: React.FC = () => {
     { number: '24/7', label: 'Support Available' },
   ];
 
+  // State for dynamic data
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [categories, setCategories] = useState<string[]>(['All']);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Filtering
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -86,7 +24,31 @@ const Partners: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const filteredPartners = partnerData.filter(
+  // Load partners and categories on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [partnersData, categoriesData] = await Promise.all([
+          partnersApi.getPartners(),
+          partnersApi.getCategories()
+        ]);
+        
+        setPartners(partnersData);
+        setCategories(categoriesData);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load partners data');
+        console.error('Error loading partners:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const filteredPartners = partners.filter(
     (partner) =>
       (selectedCategory === 'All' || partner.category === selectedCategory) &&
       partner.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -182,42 +144,69 @@ const Partners: React.FC = () => {
         </div>
 
         {/* Partners Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayedPartners.map((partner, index) => (
-            <div
-              key={index}
-              className="relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-600 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
             >
-              {partner.discount && (
-                <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded">
-                  {partner.discount}
-                </span>
-              )}
-              {/* Logo area */}
-              <div className="flex items-center justify-center bg-green-50 h-32">
-                {partner.image ? (
-                  <img
-                    src={partner.image}
-                    alt={partner.name}
-                    className="h-20 object-contain"
-                  />
-                ) : (
-                  <span className="text-5xl text-green-600">
-                    {partner.name.charAt(0)}
+              Try Again
+            </button>
+          </div>
+        ) : displayedPartners.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No partners found matching your criteria.</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayedPartners.map((partner) => (
+              <div
+                key={partner.id}
+                className="relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                {partner.discount && (
+                  <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded">
+                    {partner.discount}
                   </span>
                 )}
+                {/* Logo area */}
+                <div className="flex items-center justify-center bg-green-50 h-32">
+                  {partner.logo ? (
+                    <img
+                      src={partner.logo.startsWith('http') ? partner.logo : `http://api-disability-card.runasp.net${partner.logo}`}
+                      alt={partner.name}
+                      className="h-20 object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.fallback-initial');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'block';
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <span className={`text-5xl text-green-600 ${partner.logo ? 'fallback-initial hidden' : ''}`}>
+                    {partner.name.charAt(0)}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-green-800">
+                    {partner.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {partner.description}
+                  </p>
+                </div>
               </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-green-800">
-                  {partner.name}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  {partner.offer}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination controls */}
         {totalPages > 1 && (

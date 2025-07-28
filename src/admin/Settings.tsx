@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, Shield, Camera, Save, Eye, EyeOff } from 'lucide-react';
+import { Camera, Eye, EyeOff, Save, Shield, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useAdmin } from '../contexts/AdminContext';
 
 const Settings: React.FC = () => {
@@ -151,7 +151,7 @@ const Settings: React.FC = () => {
             <div className="relative">
               {profile.profilePicture ? (
                 <img
-                  src={`http://localhost:5253${profile.profilePicture}`}
+                  src={`http://api-disability-card.runasp.net${profile.profilePicture}`}
                   alt="Profile"
                   className="w-20 h-20 rounded-full object-cover border-4 border-gray-200"
                 />

@@ -33,6 +33,9 @@ import DashboardOverview from './admin/DashboardOverview';
 import DisabilitiesPage from './admin/DisabilitiesPage';
 import CarersPage from './admin/CarersPage';
 import CustomerSupportPage from './admin/CustomerSupportPage';
+import PartnersPage from './admin/PartnersPage';
+import ContactSubmissions from './admin/ContactSubmissions';
+import RenewalsPage from './admin/RenewalsPage';
 import Settings from './admin/Settings';
 
 function App() {
@@ -51,6 +54,9 @@ function App() {
                     <Route path="disabilities" element={<DisabilitiesPage />} />
                     <Route path="carers" element={<CarersPage />} />
                     <Route path="customer-support" element={<CustomerSupportPage />} />
+                    <Route path="partners" element={<PartnersPage />} />
+                    <Route path="renewals" element={<RenewalsPage />} />
+                    <Route path="contact-submissions" element={<ContactSubmissions />} />
                     <Route path="settings" element={<Settings />} />
                   </Routes>
                 </DashboardLayout>

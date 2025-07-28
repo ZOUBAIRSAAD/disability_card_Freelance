@@ -62,9 +62,31 @@ const ApplyCustomerSupport = () => {
     setProfilePicturePreview(null);
   };
 
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!(formData.firstName && formData.lastName && formData.dateOfBirth && 
+                 formData.gender && formData.nationality && formData.emiratesId);
+      case 2:
+        return !!(formData.supportType && formData.supportDescription);
+      case 3:
+        return !!(formData.phoneNumber && formData.email && formData.address && 
+                 formData.city && formData.emirate && formData.emergencyContactName && 
+                 formData.emergencyContactPhone);
+      case 4:
+        return true; // Profile picture is optional for now
+      default:
+        return true;
+    }
+  };
+
   const nextStep = () => {
     if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
+      if (validateStep(currentStep)) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        alert('Please fill in all required fields before proceeding to the next step.');
+      }
     }
   };
 
@@ -77,7 +99,7 @@ const ApplyCustomerSupport = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate required fields including profile picture
+    // Validate required fields
     const requiredFields = [
       'firstName', 'lastName', 'dateOfBirth', 'gender', 'nationality', 
       'emiratesId', 'phoneNumber', 'email', 'address', 'city', 'emirate', 
@@ -90,11 +112,6 @@ const ApplyCustomerSupport = () => {
       alert('Please fill in all required fields before submitting.');
       return;
     }
-
-    if (!profilePicture) {
-      alert('Please upload a profile picture before submitting.');
-      return;
-    }
     
     // Show confirmation modal instead of submitting directly
     setShowConfirmationModal(true);
@@ -102,7 +119,7 @@ const ApplyCustomerSupport = () => {
 
   const confirmSubmission = async () => {
     try {
-      // For now, submit the regular data (we'll update the API later to handle file uploads)
+      // Submit the application data (profile pictures not handled in current backend)
       const response = await applicationAPI.submitCustomerSupportApplication(formData);
       
       // Close confirmation modal and show success notification

@@ -1,8 +1,8 @@
+import { LogOut, Settings, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import { User, LogOut, Settings } from 'lucide-react';
 import { useAdmin } from '../contexts/AdminContext';
+import Sidebar from './Sidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -49,7 +49,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
                 {profile?.profilePicture ? (
                   <img 
-                    src={`http://localhost:5253${profile.profilePicture}`} 
+                    src={`http://api-disability-card.runasp.net${profile.profilePicture}`} 
                     alt="Profile" 
                     className="w-full h-full object-cover"
                   />

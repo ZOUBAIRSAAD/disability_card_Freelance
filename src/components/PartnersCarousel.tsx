@@ -1,45 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+interface Partner {
+  id: number;
+  name: string;
+  logo: string | null;
+  category: string;
+  discount: string;
+  location: string;
+  description: string;
+}
+
 /**
  * PartnersCarousel displays a horizontally scrolling marquee of partner logos.
  * It includes a UAE-flag accent bar at the top to match the Hero section.
  */
-const partnerLogos: Array<{ src?: string; alt: string }> = [
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/No7Brand.svg/640px-No7Brand.svg.png',
-    alt: 'No7',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Legoland_logo.svg/640px-Legoland_logo.svg.png',
-    alt: 'Legoland',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/76/London_Zoo_logo.svg/640px-London_Zoo_logo.svg.png',
-    alt: 'London Zoo',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Warner_Bros_logo.svg/640px-Warner_Bros_logo.svg.png',
-    alt: 'Warner Bros',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Disneyland_Paris_logo.svg/640px-Disneyland_Paris_logo.svg.png',
-    alt: 'Disneyland Paris',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Iceland_Foods.svg/640px-Iceland_Foods.svg.png',
-    alt: 'Iceland',
-  },
-  {
-    // Placeholder entry for Better; no reliable public image was available.
-    alt: 'Better',
-  },
-  {
-    // Placeholder entry for Odeon; no reliable public image was available.
-    alt: 'Odeon',
-  },
-];
-
 const PartnersCarousel: React.FC = () => {
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch partners from API
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch('http://api-disability-card.runasp.net/api/partners');
+        if (response.ok) {
+          const data = await response.json();
+          // Take only first 8 partners for the carousel
+          setPartners(data.slice(0, 8));
+        }
+      } catch (error) {
+        console.error('Error fetching partners:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartners();
+  }, []);
+
   useEffect(() => {
     // Inject keyframe animation for the horizontal scrolling effect.
     const styleEl = document.createElement('style');
@@ -48,6 +47,10 @@ const PartnersCarousel: React.FC = () => {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
       }
+      
+      .partners-scroll-container:hover {
+        animation-play-state: paused;
+      }
     `;
     document.head.appendChild(styleEl);
     return () => {
@@ -55,8 +58,39 @@ const PartnersCarousel: React.FC = () => {
     };
   }, []);
 
-  // Duplicate the logos list for seamless scrolling.
-  const logos = [...partnerLogos, ...partnerLogos];
+  if (loading) {
+    return (
+      <section className="relative py-8 bg-white">
+        <div className="absolute top-0 left-0 w-full h-1 flex">
+          <div className="flex-1 bg-uae-red"></div>
+          <div className="flex-1 bg-white"></div>
+          <div className="flex-1 bg-uae-black"></div>
+          <div className="flex-1 bg-uae-green"></div>
+        </div>
+        <p className="text-center text-uae-black text-lg md:text-xl font-medium mt-2 mb-6">
+          Backed up by leading brands:
+        </p>
+        <div className="overflow-hidden">
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-uae-red"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Always duplicate for smooth scrolling animation, but ensure minimum partners for visual appeal
+  const minimumPartnersForScroll = 6;
+  let displayPartners = [...partners];
+  
+  // If we have fewer partners, duplicate them to create smooth scrolling
+  while (displayPartners.length < minimumPartnersForScroll) {
+    displayPartners = [...displayPartners, ...partners];
+  }
+  
+  // Then duplicate again for seamless infinite scroll
+  const finalPartners = [...displayPartners, ...displayPartners];
+
   return (
     <section className="relative py-8 bg-white">
       <div className="absolute top-0 left-0 w-full h-1 flex">
@@ -70,33 +104,48 @@ const PartnersCarousel: React.FC = () => {
       </p>
       <div className="overflow-hidden">
         <div
-          className="flex items-center whitespace-nowrap"
-          style={{ animation: 'partners-scroll 30s linear infinite' }}
+          className="flex items-center whitespace-nowrap partners-scroll-container"
+          style={{ animation: 'partners-scroll 25s linear infinite' }}
         >
-          {logos.map((logo, idx) => (
+          {finalPartners.map((partner, idx) => (
             <Link
-              key={idx}
+              key={`${partner.id}-${idx}`}
               to="/partners"
               className="mx-4 flex-shrink-0"
               aria-label={`Go to partners page`}
             >
-              {logo.src ? (
+              {partner.logo ? (
                 <div
-                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center"
+                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center hover:shadow-md transition-shadow"
                   style={{ width: '8rem', height: '4.5rem' }}
                 >
                   <img
-                    src={logo.src}
-                    alt={logo.alt}
+                    src={partner.logo.startsWith('http') ? partner.logo : `http://api-disability-card.runasp.net${partner.logo}`}
+                    alt={partner.name}
                     className="h-full w-full object-contain"
+                    onError={(e) => {
+                      // Fallback to partner name if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const fallback = target.parentElement?.querySelector('.fallback-text');
+                      if (fallback) {
+                        (fallback as HTMLElement).style.display = 'flex';
+                      }
+                    }}
                   />
+                  <div
+                    className="fallback-text hidden items-center justify-center text-sm font-semibold text-gray-700 text-center w-full h-full"
+                    style={{ display: 'none' }}
+                  >
+                    {partner.name}
+                  </div>
                 </div>
               ) : (
                 <div
-                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center text-md font-semibold text-gray-700"
+                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 hover:shadow-md transition-shadow"
                   style={{ width: '8rem', height: '4.5rem' }}
                 >
-                  {logo.alt}
+                  {partner.name}
                 </div>
               )}
             </Link>

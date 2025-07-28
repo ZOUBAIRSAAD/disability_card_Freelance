@@ -1,5 +1,5 @@
+import { ArrowRight, CheckCircle, Clock, Headphones, RefreshCw, Shield } from 'lucide-react';
 import React, { useState } from 'react';
-import { CheckCircle, ArrowRight, RefreshCw, Clock, Shield, Headphones } from 'lucide-react';
 
 const RenewCustomerSupport = () => {
   const [formData, setFormData] = useState({
@@ -7,14 +7,35 @@ const RenewCustomerSupport = () => {
     firstName: '',
     lastName: '',
     emiratesId: '',
-    phone: '',
+    phoneNumber: '',
     email: '',
-    currentSupportNeeds: '',
-    stillNeedSupport: true,
+    currentSupportType: '',
+    renewalReason: '',
+    stillRequiresSupport: true,
     hasChanges: false,
-    changesDescription: '',
-    renewalReason: ''
+    changesDescription: ''
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const supportTypes = [
+    'General Customer Support',
+    'Technical Assistance',
+    'Accessibility Support',
+    'Communication Support',
+    'Emergency Support',
+    'Other'
+  ];
+
+  const renewalReasons = [
+    'Card expiring soon',
+    'Lost or damaged card',
+    'Change in support needs',
+    'Update personal information',
+    'Other'
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -32,9 +53,48 @@ const RenewCustomerSupport = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Customer Support Card renewal application submitted successfully! We will contact you within 48 hours.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('http://api-disability-card.runasp.net/api/renewal/customer-support', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          cardNumber: '',
+          firstName: '',
+          lastName: '',
+          emiratesId: '',
+          phoneNumber: '',
+          email: '',
+          currentSupportType: '',
+          renewalReason: '',
+          stillRequiresSupport: true,
+          hasChanges: false,
+          changesDescription: ''
+        });
+      } else {
+        setSubmitStatus('error');
+        setErrorMessage(data.message || 'An error occurred while submitting your renewal application.');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -97,17 +157,19 @@ const RenewCustomerSupport = () => {
               {/* Current Card Information */}
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Current Card Information</h3>
+                <p className="text-sm text-blue-600 mb-4 bg-blue-50 p-3 rounded-lg">
+                  <strong>Note:</strong> Verification is based on your Emirates ID only. Card number is optional for reference.
+                </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Customer Support Card Number *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Customer Support Card Number (Optional)</label>
                     <input
                       type="text"
                       name="cardNumber"
-                      required
                       value={formData.cardNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter your current card number"
+                      placeholder="Enter your current card number (optional)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
                     />
                   </div>
@@ -162,9 +224,9 @@ const RenewCustomerSupport = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                     <input
                       type="tel"
-                      name="phone"
+                      name="phoneNumber"
                       required
-                      value={formData.phone}
+                      value={formData.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="+971 XX XXX XXXX"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
@@ -192,19 +254,16 @@ const RenewCustomerSupport = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Current Support Type *</label>
                   <select
-                    name="currentSupportNeeds"
+                    name="currentSupportType"
                     required
-                    value={formData.currentSupportNeeds}
+                    value={formData.currentSupportType}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
                   >
                     <option value="">Select current support type</option>
-                    <option value="communication">Communication Support</option>
-                    <option value="mobility">Mobility Assistance</option>
-                    <option value="daily-activities">Daily Activities Support</option>
-                    <option value="technology">Technology Assistance</option>
-                    <option value="social">Social Support</option>
-                    <option value="multiple">Multiple Support Needs</option>
+                    {supportTypes.map((type) => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -212,8 +271,8 @@ const RenewCustomerSupport = () => {
                   <div className="flex items-center mb-4">
                     <input
                       type="checkbox"
-                      name="stillNeedSupport"
-                      checked={formData.stillNeedSupport}
+                      name="stillRequiresSupport"
+                      checked={formData.stillRequiresSupport}
                       onChange={handleInputChange}
                       className="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
                     />
@@ -235,12 +294,9 @@ const RenewCustomerSupport = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
                 >
                   <option value="">Select reason</option>
-                  <option value="expiring">Card is expiring</option>
-                  <option value="expired">Card has expired</option>
-                  <option value="damaged">Card is damaged</option>
-                  <option value="lost">Card was lost</option>
-                  <option value="stolen">Card was stolen</option>
-                  <option value="update">Need to update information</option>
+                  {renewalReasons.map((reason) => (
+                    <option key={reason} value={reason}>{reason}</option>
+                  ))}
                 </select>
               </div>
 
@@ -300,13 +356,35 @@ const RenewCustomerSupport = () => {
                 </ul>
               </div>
 
+              {/* Status Messages */}
+              {submitStatus === 'success' && (
+                <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                    <p className="text-green-700">Renewal application submitted successfully! We will contact you within 48 hours.</p>
+                  </div>
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="w-5 h-5 bg-red-600 rounded-full flex items-center justify-center mr-2">
+                      <span className="text-white text-xs">!</span>
+                    </div>
+                    <p className="text-red-700">{errorMessage}</p>
+                  </div>
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="text-center pt-6">
                 <button
                   type="submit"
-                  className="px-8 py-4 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto"
+                  disabled={isSubmitting}
+                  className="px-8 py-4 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  Submit Renewal Application
+                  {isSubmitting ? 'Submitting...' : 'Submit Renewal Application'}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
               </div>

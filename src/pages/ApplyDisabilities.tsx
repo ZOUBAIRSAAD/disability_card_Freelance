@@ -92,17 +92,19 @@ const ApplyDisabilities = () => {
                  formData.city && formData.emirate && formData.emergencyContactName && 
                  formData.emergencyContactPhone);
       case 4:
-        return !!profilePicture;
+        return true; // Profile picture is optional for now since backend doesn't handle it
       default:
         return true;
     }
   };
 
   const nextStep = () => {
-    if (currentStep < 5 && validateStep(currentStep)) {
-      setCurrentStep(currentStep + 1);
-    } else if (!validateStep(currentStep)) {
-      alert('Please fill in all required fields before proceeding.');
+    if (currentStep < 5) {
+      if (validateStep(currentStep)) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        alert('Please fill in all required fields before proceeding to the next step.');
+      }
     }
   };
 
@@ -115,10 +117,13 @@ const ApplyDisabilities = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all steps before submission
-    if (!validateStep(1) || !validateStep(2) || !validateStep(3) || !validateStep(4)) {
-      alert('Please fill in all required fields and upload a profile picture before submitting.');
-      return;
+    // Validate all required steps before submission
+    for (let step = 1; step <= 3; step++) {
+      if (!validateStep(step)) {
+        alert(`Please complete all required fields in step ${step} before submitting.`);
+        setCurrentStep(step);
+        return;
+      }
     }
     
     // Show confirmation modal instead of submitting directly
@@ -127,8 +132,20 @@ const ApplyDisabilities = () => {
 
   const confirmSubmission = async () => {
     try {
-      // For now, submit the regular data (we'll update the API later to handle file uploads)
+      // Submit the basic application data (files will be handled separately later)
       const response = await applicationAPI.submitDisabilityApplication(formData);
+      
+      // If medical documents are provided, upload them separately
+      if (formData.medicalDocuments.length > 0) {
+        for (const file of formData.medicalDocuments) {
+          try {
+            await applicationAPI.uploadMedicalDocument(response.id, file);
+          } catch (fileUploadError) {
+            console.warn('Failed to upload medical document:', fileUploadError);
+            // Continue with application success even if file upload fails
+          }
+        }
+      }
       
       // Close confirmation modal and show success notification
       setShowConfirmationModal(false);

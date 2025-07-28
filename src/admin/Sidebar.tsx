@@ -8,7 +8,10 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight,
-  HelpCircle
+  HelpCircle,
+  Building2,
+  Mail,
+  RefreshCw
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -43,6 +46,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       icon: Headphones,
       path: '/admin/customer-support',
       badge: 'support'
+    },
+    {
+      title: 'Renewals',
+      icon: RefreshCw,
+      path: '/admin/renewals',
+      badge: 'renewals'
+    },
+    {
+      title: 'Partners',
+      icon: Building2,
+      path: '/admin/partners',
+      badge: null
+    },
+    {
+      title: 'Contact Submissions',
+      icon: Mail,
+      path: '/admin/contact-submissions',
+      badge: 'contact'
     },
     {
       title: 'Support',

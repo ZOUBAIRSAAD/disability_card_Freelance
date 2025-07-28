@@ -31,6 +31,8 @@ const ApplyCarers = () => {
     emergencyContactPhone: ''
   });
 
+  const [supportingDocuments, setSupportingDocuments] = useState<File[]>([]);
+
   const steps = [
     { number: 1, title: 'Personal Information', description: 'Your basic details' },
     { number: 2, title: 'Caregiving Information', description: 'Details about your caregiving role' },
@@ -38,6 +40,25 @@ const ApplyCarers = () => {
     { number: 4, title: 'Profile Picture', description: 'Upload your photo' },
     { number: 5, title: 'Review & Submit', description: 'Confirm your application' }
   ];
+
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!(formData.firstName && formData.lastName && formData.dateOfBirth && 
+                 formData.gender && formData.nationality && formData.emiratesId);
+      case 2:
+        return !!(formData.careRecipientName && formData.relationshipToRecipient && 
+                 formData.caregivingExperience && supportingDocuments.length > 0);
+      case 3:
+        return !!(formData.phoneNumber && formData.email && formData.address && 
+                 formData.city && formData.emirate && formData.emergencyContactName && 
+                 formData.emergencyContactPhone);
+      case 4:
+        return !!profilePicture; // Optional for now since backend doesn't handle it
+      default:
+        return true;
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -58,6 +79,17 @@ const ApplyCarers = () => {
     }
   };
 
+  const handleSupportingDocumentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setSupportingDocuments(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const removeSupportingDocument = (index: number) => {
+    setSupportingDocuments(prev => prev.filter((_, i) => i !== index));
+  };
+
   const removeProfilePicture = () => {
     setProfilePicture(null);
     setProfilePicturePreview(null);
@@ -65,7 +97,11 @@ const ApplyCarers = () => {
 
   const nextStep = () => {
     if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
+      if (validateStep(currentStep)) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        alert('Please fill in all required fields before proceeding to the next step.');
+      }
     }
   };
 
@@ -78,10 +114,13 @@ const ApplyCarers = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if profile picture is uploaded
-    if (!profilePicture) {
-      alert('Please upload a profile picture before submitting.');
-      return;
+    // Validate all required steps
+    for (let step = 1; step <= 4; step++) {
+      if (!validateStep(step)) {
+        alert(`Please complete all required fields in step ${step} before submitting.`);
+        setCurrentStep(step);
+        return;
+      }
     }
     
     // Show confirmation modal instead of submitting directly
@@ -90,8 +129,13 @@ const ApplyCarers = () => {
 
   const confirmSubmission = async () => {
     try {
-      // For now, submit the regular data (we'll update the API later to handle file uploads)
-      const response = await applicationAPI.submitCarersApplication(formData);
+      // Submit the application data with supporting documents
+      const applicationWithFiles = {
+        ...formData,
+        supportingDocuments: supportingDocuments,
+      };
+      
+      const response = await applicationAPI.submitCarersApplication(applicationWithFiles);
       
       // Close confirmation modal and show success notification
       setShowConfirmationModal(false);
@@ -263,6 +307,7 @@ const ApplyCarers = () => {
                   type="file"
                   multiple
                   accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleSupportingDocumentsChange}
                   className="hidden"
                   id="supporting-docs"
                 />
@@ -273,6 +318,27 @@ const ApplyCarers = () => {
                   Choose Files
                 </label>
               </div>
+              
+              {/* Display uploaded files */}
+              {supportingDocuments.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Documents:</h4>
+                  <div className="space-y-2">
+                    {supportingDocuments.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                        <span className="text-sm text-gray-600">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeSupportingDocument(index)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );

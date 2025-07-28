@@ -1,27 +1,102 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send, CheckCircle } from 'lucide-react';
+import { contactAPI, ContactSubmissionRequest } from '../api/contactApi';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     subject: '',
     message: '',
-    cardType: ''
+    cardTypeOfInterest: ''
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear errors when user starts typing
+    if (errors.length > 0) {
+      setErrors([]);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = (): string[] => {
+    const newErrors: string[] = [];
+    
+    if (!formData.fullName.trim()) {
+      newErrors.push('Full name is required');
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.push('Email address is required');
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.push('Please enter a valid email address');
+    }
+    
+    if (!formData.subject.trim()) {
+      newErrors.push('Subject is required');
+    }
+    
+    if (!formData.message.trim()) {
+      newErrors.push('Message is required');
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrors([]);
+
+    try {
+      const submissionData: ContactSubmissionRequest = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber || undefined,
+        cardTypeOfInterest: formData.cardTypeOfInterest || undefined,
+        subject: formData.subject,
+        message: formData.message,
+      };
+
+      await contactAPI.submitContactForm(submissionData);
+      
+      // Reset form and show success message
+      setFormData({
+        fullName: '',
+        email: '',
+        phoneNumber: '',
+        subject: '',
+        message: '',
+        cardTypeOfInterest: ''
+      });
+      setShowSuccess(true);
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 5000);
+      
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setErrors(['Failed to send message. Please try again later.']);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -122,19 +197,37 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
+              {/* Success Message */}
+              {showSuccess && (
+                <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center">
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  Your message has been sent successfully! We'll get back to you soon.
+                </div>
+              )}
+
+              {/* Error Messages */}
+              {errors.length > 0 && (
+                <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                  <ul className="list-disc list-inside">
+                    {errors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
                       Full Name *
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
+                      id="fullName"
+                      name="fullName"
                       required
-                      value={formData.name}
+                      value={formData.fullName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       placeholder="Your full name"
@@ -160,14 +253,14 @@ const Contact = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
                       Phone Number
                     </label>
                     <input
                       type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       placeholder="+971 XX XXX XXXX"
@@ -175,21 +268,21 @@ const Contact = () => {
                   </div>
                   
                   <div>
-                    <label htmlFor="cardType" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="cardTypeOfInterest" className="block text-sm font-medium text-gray-700 mb-2">
                       Card Type of Interest
                     </label>
                     <select
-                      id="cardType"
-                      name="cardType"
-                      value={formData.cardType}
+                      id="cardTypeOfInterest"
+                      name="cardTypeOfInterest"
+                      value={formData.cardTypeOfInterest}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
                       <option value="">Select a card type</option>
-                      <option value="disabilities">Disabilities Card</option>
-                      <option value="carers">Carers Card</option>
-                      <option value="customer-support">Customer Support Card</option>
-                      <option value="general">General Inquiry</option>
+                      <option value="Disabilities Card">Disabilities Card</option>
+                      <option value="Carers Card">Carers Card</option>
+                      <option value="Customer Support Card">Customer Support Card</option>
+                      <option value="General Inquiry">General Inquiry</option>
                     </select>
                   </div>
                 </div>
@@ -228,10 +321,15 @@ const Contact = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all flex items-center justify-center"
+                  disabled={isSubmitting}
+                  className={`w-full ${
+                    isSubmitting 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800'
+                  } text-white py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center`}
                 >
                   <Send className="w-5 h-5 mr-2" />
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>

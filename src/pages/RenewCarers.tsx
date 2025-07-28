@@ -1,5 +1,5 @@
+import { ArrowRight, CheckCircle, Clock, Heart, RefreshCw, Shield } from 'lucide-react';
 import React, { useState } from 'react';
-import { CheckCircle, ArrowRight, RefreshCw, Clock, Shield, Heart } from 'lucide-react';
 
 const RenewCarers = () => {
   const [formData, setFormData] = useState({
@@ -7,14 +7,26 @@ const RenewCarers = () => {
     firstName: '',
     lastName: '',
     emiratesId: '',
-    phone: '',
+    phoneNumber: '',
     email: '',
     careRecipientName: '',
-    stillCaregiving: true,
+    renewalReason: '',
+    stillProvidingCare: true,
     hasChanges: false,
-    changesDescription: '',
-    renewalReason: ''
+    changesDescription: ''
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const renewalReasons = [
+    'Card expiring soon',
+    'Lost or damaged card',
+    'Change in caregiving situation',
+    'Update personal information',
+    'Other'
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -32,9 +44,48 @@ const RenewCarers = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Carers Card renewal application submitted successfully! We will contact you within 48 hours.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('http://api-disability-card.runasp.net/api/renewal/carers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          cardNumber: '',
+          firstName: '',
+          lastName: '',
+          emiratesId: '',
+          phoneNumber: '',
+          email: '',
+          careRecipientName: '',
+          renewalReason: '',
+          stillProvidingCare: true,
+          hasChanges: false,
+          changesDescription: ''
+        });
+      } else {
+        setSubmitStatus('error');
+        setErrorMessage(data.message || 'An error occurred while submitting your renewal application.');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -97,17 +148,19 @@ const RenewCarers = () => {
               {/* Current Card Information */}
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Current Card Information</h3>
+                <p className="text-sm text-blue-600 mb-4 bg-blue-50 p-3 rounded-lg">
+                  <strong>Note:</strong> Verification is based on your Emirates ID only. Card number is optional for reference.
+                </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Carers Card Number *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Carers Card Number (Optional)</label>
                     <input
                       type="text"
                       name="cardNumber"
-                      required
                       value={formData.cardNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter your current card number"
+                      placeholder="Enter your current card number (optional)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red"
                     />
                   </div>
@@ -162,9 +215,9 @@ const RenewCarers = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                     <input
                       type="tel"
-                      name="phone"
+                      name="phoneNumber"
                       required
-                      value={formData.phone}
+                      value={formData.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="+971 XX XXX XXXX"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red"
@@ -205,8 +258,8 @@ const RenewCarers = () => {
                   <div className="flex items-center mb-4">
                     <input
                       type="checkbox"
-                      name="stillCaregiving"
-                      checked={formData.stillCaregiving}
+                      name="stillProvidingCare"
+                      checked={formData.stillProvidingCare}
                       onChange={handleInputChange}
                       className="w-4 h-4 text-uae-red border-gray-300 rounded focus:ring-uae-red"
                     />
@@ -228,78 +281,69 @@ const RenewCarers = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red"
                 >
                   <option value="">Select reason</option>
-                  <option value="expiring">Card is expiring</option>
-                  <option value="expired">Card has expired</option>
-                  <option value="damaged">Card is damaged</option>
-                  <option value="lost">Card was lost</option>
-                  <option value="stolen">Card was stolen</option>
-                  <option value="update">Need to update information</option>
+                  {renewalReasons.map((reason) => (
+                    <option key={reason} value={reason}>{reason}</option>
+                  ))}
                 </select>
               </div>
 
               {/* Changes Section */}
-              <div>
+              <div className="bg-blue-50 p-6 rounded-lg">
                 <div className="flex items-center mb-4">
                   <input
                     type="checkbox"
                     name="hasChanges"
+                    id="hasChanges"
                     checked={formData.hasChanges}
                     onChange={handleInputChange}
-                    className="w-4 h-4 text-uae-red border-gray-300 rounded focus:ring-uae-red"
+                    className="w-4 h-4 text-uae-red bg-gray-100 border-gray-300 rounded focus:ring-uae-red focus:ring-2"
                   />
-                  <label className="ml-3 text-sm font-medium text-gray-700">
+                  <label htmlFor="hasChanges" className="ml-2 text-sm font-medium text-gray-700">
                     I have changes to my caregiving situation or personal information
                   </label>
                 </div>
-
+                
                 {formData.hasChanges && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Please describe the changes *
+                      Please describe the changes:
                     </label>
                     <textarea
                       name="changesDescription"
-                      required={formData.hasChanges}
-                      rows={4}
                       value={formData.changesDescription}
                       onChange={handleInputChange}
-                      placeholder="Describe any changes to your caregiving situation, contact information, or other relevant details..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red resize-none"
+                      rows={4}
+                      placeholder="Describe any changes to your caregiving situation or personal information..."
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red"
                     />
                   </div>
                 )}
               </div>
 
-              {/* Important Information */}
-              <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
-                <h4 className="text-lg font-semibold text-red-900 mb-4">Renewal Process</h4>
-                <ul className="space-y-2 text-red-800">
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>We'll verify your current caregiving status</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Updated documentation may be required</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Your renewed card will be produced and delivered</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Caregiver benefits continue without interruption</span>
-                  </li>
-                </ul>
-              </div>
+              {/* Status Messages */}
+              {submitStatus === 'success' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                    <p className="text-green-700">Renewal application submitted successfully! We will contact you within 48 hours.</p>
+                  </div>
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-red-700">{errorMessage}</p>
+                </div>
+              )}
 
               {/* Submit Button */}
               <div className="text-center pt-6">
                 <button
                   type="submit"
-                  className="px-8 py-4 bg-uae-red text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto"
+                  disabled={isSubmitting}
+                  className="px-8 py-4 bg-uae-red text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Renewal Application
+                  {isSubmitting ? 'Submitting...' : 'Submit Renewal Application'}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
               </div>
@@ -308,26 +352,53 @@ const RenewCarers = () => {
         </div>
       </section>
 
-      {/* Renewal Information */}
+      {/* Renewal Process Info */}
       <section className="py-16 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Renewal Fee</h3>
-              <p className="text-3xl font-bold text-uae-red mb-2">AED 50</p>
-              <p className="text-gray-600">One-time renewal fee for 3-year validity</p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Renewal Process</h2>
+            <p className="text-gray-600">What happens after you submit your renewal application</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="bg-uae-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-uae-red">1</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Verification</h3>
+                <p className="text-gray-600">We'll verify your current caregiving status</p>
+              </div>
             </div>
             
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Processing Time</h3>
-              <p className="text-3xl font-bold text-uae-red mb-2">5-7 Days</p>
-              <p className="text-gray-600">Standard processing for renewal applications</p>
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="bg-uae-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-uae-red">2</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Documentation</h3>
+                <p className="text-gray-600">Updated documentation may be required</p>
+              </div>
             </div>
             
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Card Validity</h3>
-              <p className="text-3xl font-bold text-uae-red mb-2">3 Years</p>
-              <p className="text-gray-600">Extended validity period from renewal date</p>
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="bg-uae-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-uae-red">3</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Production</h3>
+                <p className="text-gray-600">New card production and quality check</p>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="bg-uae-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-uae-red">4</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Delivery</h3>
+                <p className="text-gray-600">Secure delivery to your address</p>
+              </div>
             </div>
           </div>
         </div>

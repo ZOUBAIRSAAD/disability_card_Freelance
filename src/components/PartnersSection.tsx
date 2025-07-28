@@ -1,112 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, MapPin, Phone, Globe } from 'lucide-react';
+import { partnersApi, Partner } from '../api/partnersApi';
 
 const PartnersSection = () => {
-  const partners = [
-    {
-      name: "Emirates Airlines",
-      logo: "https://images.pexels.com/photos/358319/pexels-photo-358319.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Travel & Transportation",
-      discount: "Up to 25% off",
-      location: "Dubai, UAE",
-      description: "Special discounts on flights and priority boarding services"
-    },
-    {
-      name: "Dubai Mall",
-      logo: "https://images.pexels.com/photos/264507/pexels-photo-264507.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Shopping & Retail",
-      discount: "10-20% off",
-      location: "Dubai, UAE",
-      description: "Exclusive discounts at participating stores and restaurants"
-    },
-    {
-      name: "Carrefour UAE",
-      logo: "https://images.pexels.com/photos/264547/pexels-photo-264547.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Grocery & Essentials",
-      discount: "5-15% off",
-      location: "Nationwide",
-      description: "Regular discounts on groceries and household items"
-    },
-    {
-      name: "ADNOC",
-      logo: "https://images.pexels.com/photos/33688/delicate-arch-night-stars-landscape.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Fuel & Services",
-      discount: "Fuel discounts",
-      location: "UAE Wide",
-      description: "Special rates on fuel and car services"
-    },
-    {
-      name: "Jumeirah Hotels",
-      logo: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Hospitality",
-      discount: "Up to 30% off",
-      location: "Dubai, UAE",
-      description: "Luxury accommodation with accessibility features"
-    },
-    {
-      name: "Spinneys",
-      logo: "https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Grocery & Gourmet",
-      discount: "10% off",
-      location: "UAE Wide",
-      description: "Premium grocery shopping with special assistance"
-    },
-    {
-      name: "Etisalat",
-      logo: "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Telecommunications",
-      discount: "Special plans",
-      location: "UAE Wide",
-      description: "Discounted mobile and internet plans"
-    },
-    {
-      name: "Dubai Health Authority",
-      logo: "https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Healthcare",
-      discount: "Priority services",
-      location: "Dubai, UAE",
-      description: "Priority healthcare services and reduced waiting times"
-    },
-    {
-      name: "IKEA UAE",
-      logo: "https://images.pexels.com/photos/279618/pexels-photo-279618.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Home & Furniture",
-      discount: "15% off",
-      location: "Dubai, Abu Dhabi",
-      description: "Home accessibility solutions and furniture discounts"
-    },
-    {
-      name: "Noon.com",
-      logo: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "E-commerce",
-      discount: "Exclusive deals",
-      location: "Online",
-      description: "Special online shopping discounts and priority delivery"
-    },
-    {
-      name: "Dubai Metro",
-      logo: "https://images.pexels.com/photos/378570/pexels-photo-378570.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Public Transport",
-      discount: "Free travel",
-      location: "Dubai, UAE",
-      description: "Free public transportation for cardholders"
-    },
-    {
-      name: "Pharmacies Network",
-      logo: "https://images.pexels.com/photos/356040/pexels-photo-356040.jpeg?auto=compress&cs=tinysrgb&w=200&h=100&fit=crop",
-      category: "Healthcare & Pharmacy",
-      discount: "10-25% off",
-      location: "UAE Wide",
-      description: "Discounts on medications and health products"
-    }
-  ];
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPartners = async () => {
+      try {
+        const partnersData = await partnersApi.getPartners();
+        // Take only first 6 partners for the home page section
+        setPartners(partnersData.slice(0, 6));
+      } catch (error) {
+        console.error('Error loading partners:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPartners();
+  }, []);
 
   const categories = [
     { name: "All Partners", count: partners.length, color: "bg-uae-green" },
-    { name: "Healthcare", count: 2, color: "bg-uae-red" },
-    { name: "Shopping", count: 4, color: "bg-uae-black" },
-    { name: "Transportation", count: 3, color: "bg-blue-600" },
-    { name: "Services", count: 3, color: "bg-purple-600" }
+    { name: "Healthcare", count: partners.filter(p => p.category.toLowerCase().includes('health')).length, color: "bg-uae-red" },
+    { name: "Shopping", count: partners.filter(p => p.category.toLowerCase().includes('shop') || p.category.toLowerCase().includes('retail')).length, color: "bg-uae-black" },
+    { name: "Transport", count: partners.filter(p => p.category.toLowerCase().includes('transport')).length, color: "bg-blue-600" },
   ];
 
   return (
@@ -137,18 +57,24 @@ const PartnersSection = () => {
 
         {/* Partners Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-          {partners.map((partner, index) => (
+          {partners.map((partner) => (
             <div
-              key={index}
+              key={partner.id}
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden group"
             >
               {/* Partner Logo */}
-              <div className="h-32 bg-gray-100 overflow-hidden">
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
+              <div className="h-32 bg-gray-100 overflow-hidden flex items-center justify-center">
+                {partner.logo ? (
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="text-4xl font-bold text-green-600">
+                    {partner.name.charAt(0)}
+                  </div>
+                )}
               </div>
               
               {/* Partner Info */}
