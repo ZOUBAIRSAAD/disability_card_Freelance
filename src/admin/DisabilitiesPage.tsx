@@ -154,7 +154,7 @@ const DisabilitiesPage: React.FC = () => {
                         {doc.filePath && (doc.fileType.includes('image') || doc.fileType.includes('jpg') || doc.fileType.includes('png')) && (
                           <div className="mt-3">
                             <img 
-                              src={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev${doc.filePath}`} 
+                              src={`http://localhost:5253${doc.filePath}`} 
                               alt={`Document ${index + 1}`}
                               className="w-full h-48 object-cover rounded border"
                             />

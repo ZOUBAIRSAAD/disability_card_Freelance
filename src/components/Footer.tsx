@@ -1,9 +1,14 @@
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import TrackCardModal from './TrackCardModal';
 
 const Footer = () => {
+  const [showTrackModal, setShowTrackModal] = useState(false);
+
   return (
-    <footer className="bg-gray-900 text-white">
+    <>
+      <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
@@ -34,6 +39,17 @@ const Footer = () => {
                 <div className="absolute w-2 h-6 bg-uae-green"></div>
               </div>
               <span className="text-sm text-gray-400">Proudly serving the UAE</span>
+            </div>
+            
+            {/* Track My Card Button */}
+            <div className="pt-4">
+              <button
+                onClick={() => setShowTrackModal(true)}
+                className="bg-uae-green text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
+              >
+                <span></span>
+                <span>Track My Card</span>
+              </button>
             </div>
             
             <div className="flex space-x-4">
@@ -150,7 +166,14 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+      </footer>
+      
+      {/* Track Card Modal */}
+      <TrackCardModal 
+        isOpen={showTrackModal} 
+        onClose={() => setShowTrackModal(false)} 
+      />
+    </>
   );
 };
 
