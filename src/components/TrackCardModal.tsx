@@ -1,51 +1,45 @@
 import React, { useState } from 'react';
 import { X, Search, CheckCircle, AlertCircle } from 'lucide-react';
+import { trackCard, Card } from '../api/cardApi';
+import { toast } from 'react-hot-toast';
 
 interface TrackCardModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface CardData {
-  cardNumber: string;
-  holderName: string;
-  issuedDate: string;
-  expiryDate: string;
-  status: string;
-  cardType: string;
-}
-
 const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
   const [cardNumber, setCardNumber] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [cardData, setCardData] = useState<CardData | null>(null);
+  const [cardData, setCardData] = useState<Card | null>(null);
   const [error, setError] = useState('');
 
-  // Static card data for demonstration
-  const staticCardData: CardData = {
-    cardNumber: 'AA-123456789',
-    holderName: 'Sarah Mohammed Al-Zahra',
-    issuedDate: '15/03/2024',
-    expiryDate: '15/03/2026',
-    status: 'Active',
-    cardType: 'National Disability Card'
-  };
-
   const handleSearch = async () => {
+    if (!cardNumber.trim()) {
+      toast.error('Please enter a card number');
+      return;
+    }
+
     setIsSearching(true);
     setError('');
     setCardData(null);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    if (cardNumber.trim().toUpperCase() === 'AA-123456789') {
-      setCardData(staticCardData);
-    } else {
-      setError('Card number not found. Please check your card number and try again.');
+    try {
+      const result = await trackCard(cardNumber.trim());
+      if (result.found && result.card) {
+        setCardData(result.card);
+        toast.success('Card found!');
+      } else {
+        setError('Card number not found. Please check your card number and try again.');
+        toast.error('Card not found');
+      }
+    } catch (err: any) {
+      console.error('Error tracking card:', err);
+      setError(err.message || 'Failed to track card');
+      toast.error(err.message || 'Failed to track card');
+    } finally {
+      setIsSearching(false);
     }
-
-    setIsSearching(false);
   };
 
   const handleClose = () => {
@@ -53,6 +47,19 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
     setCardData(null);
     setError('');
     onClose();
+  };
+
+  const getCardImage = (type: string) => {
+    switch (type) {
+      case 'National Carers Card':
+        return '/Nationality-Carers-Card.jpg';
+      case 'National Disability Card':
+        return '/National-Disability-Carde.jpg';
+      case 'National Support Card':
+        return '/National-Support-Card.jpg';
+      default:
+        return '/National-Disability-Carde.jpg';
+    }
   };
 
   if (!isOpen) return null;
@@ -92,12 +99,12 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                     type="text"
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
-                    placeholder="Enter card number (e.g., AA-123456789)"
+                    placeholder="Enter card number (e.g., ND-123456789)"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-green focus:border-uae-green text-center text-lg font-mono"
                     disabled={isSearching}
                   />
                 </div>
-                
+
                 {error && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center">
                     <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
@@ -123,13 +130,6 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                     'Track Card'
                   )}
                 </button>
-
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="text-sm font-semibold text-blue-900 mb-2">Demo Information</h4>
-                  <p className="text-blue-800 text-sm">
-                    For demonstration purposes, use card number: <strong>AA-123456789</strong>
-                  </p>
-                </div>
               </div>
             </div>
           ) : (
@@ -148,20 +148,19 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex justify-center">
                   <div className="relative">
                     <img
-                      src="/National-Disability-Carde.jpg"
-                      alt="National Disability Card"
+                      src={getCardImage(cardData.cardType)}
+                      alt={cardData.cardType}
                       className="w-full max-w-md rounded-2xl shadow-2xl"
                     />
-                    {/* Overlay with card information */}
                     <div className="absolute inset-0 bg-black/20 rounded-2xl flex flex-col justify-between p-6 text-white">
                       <div className="text-right">
                         <p className="text-sm font-semibold">{cardData.cardNumber}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-lg font-bold">{cardData.holderName}</p>
+                        <p className="text-lg font-bold">{cardData.cardholderName}</p>
                         <div className="flex justify-between text-sm">
-                          <span>Issued: {cardData.issuedDate}</span>
-                          <span>Expires: {cardData.expiryDate}</span>
+                          <span>Issued: {new Date(cardData.issuedDate).toLocaleDateString()}</span>
+                          <span>Expires: {new Date(cardData.expiryDate).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
@@ -179,7 +178,7 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-gray-200">
                         <span className="text-gray-600">Cardholder Name:</span>
-                        <span className="font-semibold text-gray-900">{cardData.holderName}</span>
+                        <span className="font-semibold text-gray-900">{cardData.cardholderName}</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-gray-200">
                         <span className="text-gray-600">Card Type:</span>
@@ -187,16 +186,16 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-gray-200">
                         <span className="text-gray-600">Issued Date:</span>
-                        <span className="font-semibold text-gray-900">{cardData.issuedDate}</span>
+                        <span className="font-semibold text-gray-900">{new Date(cardData.issuedDate).toLocaleDateString()}</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-gray-200">
                         <span className="text-gray-600">Expiry Date:</span>
-                        <span className="font-semibold text-gray-900">{cardData.expiryDate}</span>
+                        <span className="font-semibold text-gray-900">{new Date(cardData.expiryDate).toLocaleDateString()}</span>
                       </div>
                       <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600">Status:</span>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          cardData.status === 'Active' 
+                          cardData.status.toLowerCase() === 'active' 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
                         }`}>
@@ -204,29 +203,6 @@ const TrackCardModal: React.FC<TrackCardModalProps> = ({ isOpen, onClose }) => {
                         </span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Additional Information */}
-                  <div className="bg-blue-50 rounded-xl p-6">
-                    <h4 className="text-lg font-semibold text-blue-900 mb-4">Important Information</h4>
-                    <ul className="space-y-2 text-blue-800 text-sm">
-                      <li className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Your card is valid and active
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        All benefits and services are accessible
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Card expires on {cardData.expiryDate}
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Renewal reminder will be sent 60 days before expiry
-                      </li>
-                    </ul>
                   </div>
 
                   {/* Action Buttons */}

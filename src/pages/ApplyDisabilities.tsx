@@ -544,20 +544,30 @@ const ApplyDisabilities = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-uae-green py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section>
+        {/* Hero Section with new background image */}
+      <div className="relative text-white py-20">
+        <img
+          src="/disability_applay.png"
+          alt="Abu Dhabi skyline with UAE flag"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Gradient overlay for readability and brand colours */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 opacity-70 via-black/40 to-green-700 opacity-70"></div>
+        {/* Hero content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <CreditCard className="w-16 h-16 mx-auto mb-6 text-white" />
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Apply for Disabilities Card
           </h1>
           <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Get your official UAE National Disability Card and access comprehensive 
-            benefits and support services across the Emirates.
+          Get your official UAE National Disability Card and access comprehensive 
+          benefits and support services across the Emirates.
           </p>
         </div>
-      </section>
+      </div>
 
+      </section>
       {/* Application Process Info */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

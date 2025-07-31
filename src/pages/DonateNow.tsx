@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, CreditCard, Users, Target, CheckCircle, ArrowRight } from 'lucide-react';
+import { donationAPI, CreateDonationRequest } from '../api/donationApi';
 
 const DonateNow = () => {
   const [donationAmount, setDonationAmount] = useState('');
@@ -11,6 +12,8 @@ const DonateNow = () => {
     phone: '',
     isAnonymous: false
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
 
   const predefinedAmounts = [50, 100, 250, 500, 1000, 2500];
 
@@ -32,9 +35,45 @@ const DonateNow = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Thank you for your generous donation of AED ${donationAmount}! You will be redirected to the secure payment gateway.`);
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      const donationData: CreateDonationRequest = {
+        firstName: donorInfo.firstName,
+        lastName: donorInfo.lastName,
+        email: donorInfo.email,
+        phoneNumber: donorInfo.phone,
+        donationType: donationType,
+        amount: parseFloat(donationAmount),
+        isAnonymous: donorInfo.isAnonymous,
+        paymentMethod: 'Credit Card', // Default payment method
+        needsTaxReceipt: true,
+        notes: `Donation of AED ${donationAmount} - ${donationType} donation`
+      };
+
+      const response = await donationAPI.createDonation(donationData);
+      setSubmitMessage(response.message);
+      
+      // Reset form
+      setDonationAmount('');
+      setDonorInfo({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        isAnonymous: false
+      });
+      setDonationType('one-time');
+      
+    } catch (error) {
+      console.error('Error submitting donation:', error);
+      setSubmitMessage(error instanceof Error ? error.message : 'An error occurred while processing your donation');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const impactAreas = [
@@ -61,8 +100,15 @@ const DonateNow = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-uae-red to-red-700 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section
+        className="relative py-20 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/donation.jpg')" }} // Replace with your image
+      >
+        {/* Red overlay */}
+        <div className="absolute inset-0 bg-red-900/60"></div>
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Heart className="w-16 h-16 mx-auto mb-6 text-white" />
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Donate Now
@@ -73,7 +119,6 @@ const DonateNow = () => {
           </p>
         </div>
       </section>
-
       {/* Impact Areas */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -297,19 +342,30 @@ const DonateNow = () => {
                 </ul>
               </div>
 
+              {/* Submit Message */}
+              {submitMessage && (
+                <div className={`p-4 rounded-lg mb-6 ${
+                  submitMessage.includes('successfully') || submitMessage.includes('Thank you')
+                    ? 'bg-green-50 border border-green-200 text-green-800'
+                    : 'bg-red-50 border border-red-200 text-red-800'
+                }`}>
+                  {submitMessage}
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="text-center pt-6">
                 <button
                   type="submit"
-                  disabled={!donationAmount || parseFloat(donationAmount) < 10}
+                  disabled={!donationAmount || parseFloat(donationAmount) < 10 || isSubmitting}
                   className={`px-8 py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center mx-auto ${
-                    donationAmount && parseFloat(donationAmount) >= 10
+                    donationAmount && parseFloat(donationAmount) >= 10 && !isSubmitting
                       ? 'bg-uae-red text-white hover:bg-red-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
-                  Donate AED {donationAmount || '0'} {donationType === 'monthly' ? '/month' : ''}
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  {isSubmitting ? 'Processing...' : `Donate AED ${donationAmount || '0'} ${donationType === 'monthly' ? '/month' : ''}`}
+                  {!isSubmitting && <ArrowRight className="ml-2 w-5 h-5" />}
                 </button>
               </div>
             </form>

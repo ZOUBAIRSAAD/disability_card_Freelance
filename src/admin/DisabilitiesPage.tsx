@@ -1,14 +1,19 @@
-import { CheckCircle, Clock, Eye, Filter, Search, XCircle } from 'lucide-react';
+import { CheckCircle, Clock, Eye, Filter, Search, XCircle, CreditCard } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { adminAPI, DisabilityApplication } from '../api/adminApi';
+import { useNotifications } from '../contexts/NotificationContext';
+import CreateOnlyCardModal from '../components/CreateOnlyCardModal';
 
 const DisabilitiesPage: React.FC = () => {
   const [applications, setApplications] = useState<DisabilityApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markAsViewed } = useNotifications();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState<DisabilityApplication | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateCardModal, setShowCreateCardModal] = useState(false);
+  const [selectedApplicationForCard, setSelectedApplicationForCard] = useState<DisabilityApplication | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -47,6 +52,17 @@ const DisabilitiesPage: React.FC = () => {
     } catch (error) {
       console.error('Error updating status:', error);
     }
+  };
+
+  const handleCreateCard = (application: DisabilityApplication) => {
+    setSelectedApplicationForCard(application);
+    setShowCreateCardModal(true);
+  };
+
+  const handleCardCreated = () => {
+    setShowCreateCardModal(false);
+    setSelectedApplicationForCard(null);
+    // Optionally refresh applications or show success message
   };
 
   const getStatusColor = (status: string) => {
@@ -154,7 +170,7 @@ const DisabilitiesPage: React.FC = () => {
                         {doc.filePath && (doc.fileType.includes('image') || doc.fileType.includes('jpg') || doc.fileType.includes('png')) && (
                           <div className="mt-3">
                             <img 
-                              src={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev${doc.filePath}`} 
+                              src={`http://localhost:5253${doc.filePath}`} 
                               alt={`Document ${index + 1}`}
                               className="w-full h-48 object-cover rounded border"
                             />
@@ -318,9 +334,10 @@ const DisabilitiesPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setSelectedApplication(app);
                             setShowModal(true);
+                            markAsViewed('disabilities', app.id);
                           }}
                           className="text-blue-600 hover:text-blue-900"
                           title="View Details"
@@ -345,6 +362,15 @@ const DisabilitiesPage: React.FC = () => {
                             </button>
                           </>
                         )}
+                        {app.applicationStatus.toLowerCase() === 'approved' && (
+                          <button
+                            onClick={() => handleCreateCard(app)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Create Card"
+                          >
+                            <CreditCard className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -362,6 +388,25 @@ const DisabilitiesPage: React.FC = () => {
       {/* Modal */}
       {showModal && selectedApplication && (
         <ApplicationModal application={selectedApplication} />
+      )}
+
+      {/* Create Card Modal */}
+      {showCreateCardModal && selectedApplicationForCard && (
+        <CreateOnlyCardModal
+          isOpen={showCreateCardModal}
+          onClose={() => {
+            setShowCreateCardModal(false);
+            setSelectedApplicationForCard(null);
+          }}
+          onCardCreated={handleCardCreated}
+          applicationData={{
+            id: selectedApplicationForCard.id,
+            firstName: selectedApplicationForCard.firstName,
+            lastName: selectedApplicationForCard.lastName,
+            cardType: 'disability',
+            applicationType: 'disability'
+          }}
+        />
       )}
     </div>
   );

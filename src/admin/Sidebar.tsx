@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Users, 
@@ -11,18 +11,58 @@ import {
   HelpCircle,
   Building2,
   Mail,
-  RefreshCw
+  RefreshCw,
+  DollarSign,
+  Badge,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  CreditCard
 } from 'lucide-react';
+import { useNotifications } from '../contexts/NotificationContext';
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
 }
 
+interface MenuItem {
+  title: string;
+  icon: any;
+  path?: string;
+  badge?: string | null;
+  disabled?: boolean;
+  subItems?: MenuItem[];
+}
+
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+  const { counts, markAsViewed } = useNotifications();
 
-  const menuItems = [
+  const handleSidebarClick = (badge: string | null) => {
+    if (badge) {
+      // Clear notification count for certain sections when clicked
+      if (['donations', 'contact'].includes(badge)) {
+        markAsViewed(badge as keyof typeof counts, 0); // Use 0 as placeholder ID
+      }
+    }
+  };
+
+  const toggleMenu = (title: string) => {
+    setExpandedMenus(prev => 
+      prev.includes(title) 
+        ? prev.filter(item => item !== title)
+        : [...prev, title]
+    );
+  };
+
+  const getNotificationCount = (badge: string | null | undefined): number => {
+    if (!badge || !counts) return 0;
+    return counts[badge as keyof typeof counts] || 0;
+  };
+
+  const menuItems: MenuItem[] = [
     {
       title: 'Dashboard',
       icon: BarChart3,
@@ -30,28 +70,70 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       badge: null
     },
     {
-      title: 'Disability Cards',
-      icon: Users,
-      path: '/admin/disabilities',
-      badge: 'disabilities'
+      title: 'APPLY NOW',
+      icon: FileText,
+      subItems: [
+        {
+          title: 'Disability Cards',
+          icon: Users,
+          path: '/admin/disabilities',
+          badge: 'disabilities'
+        },
+        {
+          title: 'Carers Cards',
+          icon: Heart,
+          path: '/admin/carers',
+          badge: 'carers'
+        },
+        {
+          title: 'Customer Support',
+          icon: Headphones,
+          path: '/admin/customer-support',
+          badge: 'support'
+        },
+        {
+          title: 'Verified Lanyards',
+          icon: Badge,
+          path: '/admin/verified-lanyards',
+          badge: 'lanyards'
+        }
+      ]
     },
     {
-      title: 'Carers Cards',
-      icon: Heart,
-      path: '/admin/carers',
-      badge: 'carers'
-    },
-    {
-      title: 'Customer Support',
-      icon: Headphones,
-      path: '/admin/customer-support',
-      badge: 'support'
+      title: 'Donations',
+      icon: DollarSign,
+      path: '/admin/donations',
+      badge: 'donations'
     },
     {
       title: 'Renewals',
       icon: RefreshCw,
-      path: '/admin/renewals',
-      badge: 'renewals'
+      subItems: [
+        {
+          title: 'Renew Disabilities Card',
+          icon: Users,
+          path: '/admin/renewals/disabilities',
+          badge: 'renewal-disabilities'
+        },
+        {
+          title: 'Renew Carers Card',
+          icon: Heart,
+          path: '/admin/renewals/carers',
+          badge: 'renewal-carers'
+        },
+        {
+          title: 'Renew Customer Support Card',
+          icon: Headphones,
+          path: '/admin/renewals/customer-support',
+          badge: 'renewal-support'
+        }
+      ]
+    },
+    {
+      title: 'Tracking Cards',
+      icon: CreditCard,
+      path: '/admin/tracking-cards',
+      badge: null
     },
     {
       title: 'Partners',
@@ -110,31 +192,109 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       <nav className="p-4 space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path;
+          const isActive = item.path ? location.pathname === item.path : false;
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+          const isExpanded = expandedMenus.includes(item.title);
+          const hasActiveSubItem = hasSubItems && item.subItems?.some(subItem => 
+            subItem.path && location.pathname === subItem.path
+          );
           
           return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={`flex items-center px-3 py-2.5 rounded-lg transition-colors ${
-                item.disabled 
-                  ? 'cursor-not-allowed opacity-50' 
-                  : isActive
-                  ? 'bg-green-100 text-green-800'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-              onClick={item.disabled ? (e) => e.preventDefault() : undefined}
-            >
-              <Icon className={`w-5 h-5 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
-              {!isCollapsed && (
-                <span className="font-medium">{item.title}</span>
+            <div key={item.title}>
+              {/* Main menu item */}
+              {hasSubItems ? (
+                <button
+                  onClick={() => !isCollapsed && toggleMenu(item.title)}
+                  className={`w-full flex items-center px-3 py-2.5 rounded-lg transition-colors ${
+                    item.disabled 
+                      ? 'cursor-not-allowed opacity-50' 
+                      : hasActiveSubItem || isActive
+                      ? 'bg-green-100 text-green-800'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                  disabled={item.disabled}
+                >
+                  <Icon className={`w-5 h-5 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                  {!isCollapsed && (
+                    <>
+                      <span className="font-medium flex-1 text-left">{item.title}</span>
+                      {item.badge && getNotificationCount(item.badge) > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 mr-2">
+                          {getNotificationCount(item.badge)}
+                        </span>
+                      )}
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </>
+                  )}
+                </button>
+              ) : (
+                <NavLink
+                  to={item.path || '#'}
+                  className={`flex items-center px-3 py-2.5 rounded-lg transition-colors ${
+                    item.disabled 
+                      ? 'cursor-not-allowed opacity-50' 
+                      : isActive
+                      ? 'bg-green-100 text-green-800'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                  onClick={item.disabled ? (e: any) => e.preventDefault() : () => handleSidebarClick(item.badge || null)}
+                >
+                  <Icon className={`w-5 h-5 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                  {!isCollapsed && (
+                    <>
+                      <span className="font-medium flex-1">{item.title}</span>
+                      {item.badge && getNotificationCount(item.badge) > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 mr-2">
+                          {getNotificationCount(item.badge)}
+                        </span>
+                      )}
+                    </>
+                  )}
+                  {!isCollapsed && item.disabled && (
+                    <span className="ml-auto text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                      Soon
+                    </span>
+                  )}
+                </NavLink>
               )}
-              {!isCollapsed && item.disabled && (
-                <span className="ml-auto text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
-                  Soon
-                </span>
+              
+              {/* Sub menu items */}
+              {hasSubItems && !isCollapsed && isExpanded && (
+                <div className="ml-6 mt-2 space-y-1">
+                  {item.subItems?.map((subItem) => {
+                    const SubIcon = subItem.icon;
+                    const isSubActive = subItem.path ? location.pathname === subItem.path : false;
+                    
+                    return (
+                      <NavLink
+                        key={subItem.title}
+                        to={subItem.path || '#'}
+                        className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
+                          subItem.disabled 
+                            ? 'cursor-not-allowed opacity-50' 
+                            : isSubActive
+                            ? 'bg-green-50 text-green-700 border-l-2 border-green-500'
+                            : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                        onClick={subItem.disabled ? (e) => e.preventDefault() : undefined}
+                      >
+                        <SubIcon className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-medium flex-1">{subItem.title}</span>
+                        {subItem.badge && getNotificationCount(subItem.badge) > 0 && (
+                          <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                            {getNotificationCount(subItem.badge)}
+                          </span>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
               )}
-            </NavLink>
+            </div>
           );
         })}
       </nav>

@@ -2,6 +2,7 @@ import { LogOut, Settings, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../contexts/AdminContext';
+import { NotificationProvider } from '../contexts/NotificationContext';
 import Sidebar from './Sidebar';
 
 interface DashboardLayoutProps {
@@ -25,8 +26,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
+    <NotificationProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Sidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
       
       {/* Main Content */}
       <div className={`transition-all duration-300 ${
@@ -49,7 +51,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
                 {profile?.profilePicture ? (
                   <img 
-                    src={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev${profile.profilePicture}`} 
+                    src={`http://localhost:5253${profile.profilePicture}`} 
                     alt="Profile" 
                     className="w-full h-full object-cover"
                   />
@@ -105,7 +107,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           onClick={() => setShowProfileMenu(false)}
         />
       )}
-    </div>
+      </div>
+    </NotificationProvider>
   );
 };
 

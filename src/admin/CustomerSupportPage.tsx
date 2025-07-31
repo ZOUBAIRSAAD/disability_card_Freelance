@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Eye, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Search, Filter, Eye, CheckCircle, XCircle, Clock, CreditCard } from 'lucide-react';
 import { adminAPI, CustomerSupportApplication } from '../api/adminApi';
+import { useNotifications } from '../contexts/NotificationContext';
+import CreateOnlyCardModal from '../components/CreateOnlyCardModal';
 
 const CustomerSupportPage: React.FC = () => {
   const [applications, setApplications] = useState<CustomerSupportApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markAsViewed } = useNotifications();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState<CustomerSupportApplication | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateCardModal, setShowCreateCardModal] = useState(false);
+  const [selectedApplicationForCard, setSelectedApplicationForCard] = useState<CustomerSupportApplication | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -47,6 +52,17 @@ const CustomerSupportPage: React.FC = () => {
     } catch (error) {
       console.error('Error updating status:', error);
     }
+  };
+
+  const handleCreateCard = (application: CustomerSupportApplication) => {
+    setSelectedApplicationForCard(application);
+    setShowCreateCardModal(true);
+  };
+
+  const handleCardCreated = () => {
+    setShowCreateCardModal(false);
+    setSelectedApplicationForCard(null);
+    // Optionally refresh applications or show success message
   };
 
   const getStatusColor = (status: string) => {
@@ -314,9 +330,10 @@ const CustomerSupportPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setSelectedApplication(app);
                             setShowModal(true);
+                            markAsViewed('support', app.id);
                           }}
                           className="text-blue-600 hover:text-blue-900"
                           title="View Details"
@@ -341,6 +358,15 @@ const CustomerSupportPage: React.FC = () => {
                             </button>
                           </>
                         )}
+                        {app.applicationStatus.toLowerCase() === 'approved' && (
+                          <button
+                            onClick={() => handleCreateCard(app)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Create Card"
+                          >
+                            <CreditCard className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -358,6 +384,25 @@ const CustomerSupportPage: React.FC = () => {
       {/* Modal */}
       {showModal && selectedApplication && (
         <ApplicationModal application={selectedApplication} />
+      )}
+
+      {/* Create Card Modal */}
+      {showCreateCardModal && selectedApplicationForCard && (
+        <CreateOnlyCardModal
+          isOpen={showCreateCardModal}
+          onClose={() => {
+            setShowCreateCardModal(false);
+            setSelectedApplicationForCard(null);
+          }}
+          onCardCreated={handleCardCreated}
+          applicationData={{
+            id: selectedApplicationForCard.id,
+            firstName: selectedApplicationForCard.firstName,
+            lastName: selectedApplicationForCard.lastName,
+            cardType: 'customer_support',
+            applicationType: 'customer_support'
+          }}
+        />
       )}
     </div>
   );

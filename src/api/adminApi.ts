@@ -1,5 +1,5 @@
-const API_BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api';
-/*https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev*/
+const API_BASE_URL = 'http://localhost:5253/api';
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -69,6 +69,12 @@ export interface DashboardStats {
   totalApplications: number;
   totalContactSubmissions: number;
   newContactSubmissions: number;
+  donations: {
+    total: number;
+    totalAmount: number;
+    pending: number;
+    completed: number;
+  };
   disabilityApplications: {
     total: number;
     pending: number;

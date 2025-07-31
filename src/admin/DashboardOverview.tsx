@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Heart, Headphones, TrendingUp } from 'lucide-react';
+import { Users, Heart, Headphones, TrendingUp, DollarSign } from 'lucide-react';
 import { adminAPI, DashboardStats } from '../api/adminApi';
 
 const DashboardOverview: React.FC = () => {
@@ -66,13 +66,23 @@ const DashboardOverview: React.FC = () => {
       textColor: 'text-purple-600'
     },
     {
+      title: 'Donations',
+      total: stats.donations.total,
+      pending: stats.donations.pending,
+      icon: DollarSign,
+      color: 'bg-green-500',
+      lightColor: 'bg-green-50',
+      textColor: 'text-green-600',
+      amount: stats.donations.totalAmount
+    },
+    {
       title: 'Total Applications',
       total: stats.totalApplications,
       pending: stats.disabilityApplications.pending + stats.carersApplications.pending + stats.customerSupportApplications.pending,
       icon: TrendingUp,
-      color: 'bg-green-500',
-      lightColor: 'bg-green-50',
-      textColor: 'text-green-600'
+      color: 'bg-orange-500',
+      lightColor: 'bg-orange-50',
+      textColor: 'text-orange-600'
     }
   ];
 
@@ -94,7 +104,7 @@ const DashboardOverview: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {statsCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -103,9 +113,15 @@ const DashboardOverview: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-2xl font-bold text-gray-900">{card.total}</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {card.pending} pending
-                  </p>
+                  {card.amount !== undefined ? (
+                    <p className="text-sm text-gray-500 mt-1">
+                      AED {card.amount.toLocaleString()}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-500 mt-1">
+                      {card.pending} pending
+                    </p>
+                  )}
                 </div>
                 <div className={`${card.lightColor} p-3 rounded-lg`}>
                   <Icon className={`w-6 h-6 ${card.textColor}`} />

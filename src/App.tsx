@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,6 +27,7 @@ import RenewCustomerSupport from './pages/RenewCustomerSupport';
 import DonateNow from './pages/DonateNow';
 import BecomeFranchise from './pages/BecomeFranchise';
 import Contact from './pages/Contact';
+import TrackCard from './pages/TrackCard';
 
 // Admin Components
 import Login from './admin/Login';
@@ -34,9 +36,15 @@ import DashboardOverview from './admin/DashboardOverview';
 import DisabilitiesPage from './admin/DisabilitiesPage';
 import CarersPage from './admin/CarersPage';
 import CustomerSupportPage from './admin/CustomerSupportPage';
+import VerifiedLanyardApplicationsPage from './admin/VerifiedLanyardApplicationsPage';
+import DonationsPage from './admin/DonationsPage';
 import PartnersPage from './admin/PartnersPage';
 import ContactSubmissions from './admin/ContactSubmissions';
 import RenewalsPage from './admin/RenewalsPage';
+import RenewalsDisabilitiesPage from './admin/RenewalsDisabilitiesPage';
+import RenewalsCarersPage from './admin/RenewalsCarersPage';
+import RenewalsCustomerSupportPage from './admin/RenewalsCustomerSupportPage';
+import TrackingCardsPage from './admin/TrackingCardsPage';
 import Settings from './admin/Settings';
 
 function App() {
@@ -55,8 +63,14 @@ function App() {
                     <Route path="disabilities" element={<DisabilitiesPage />} />
                     <Route path="carers" element={<CarersPage />} />
                     <Route path="customer-support" element={<CustomerSupportPage />} />
+                    <Route path="verified-lanyards" element={<VerifiedLanyardApplicationsPage />} />
+                    <Route path="donations" element={<DonationsPage />} />
                     <Route path="partners" element={<PartnersPage />} />
                     <Route path="renewals" element={<RenewalsPage />} />
+                    <Route path="renewals/disabilities" element={<RenewalsDisabilitiesPage />} />
+                    <Route path="renewals/carers" element={<RenewalsCarersPage />} />
+                    <Route path="renewals/customer-support" element={<RenewalsCustomerSupportPage />} />
+                    <Route path="tracking-cards" element={<TrackingCardsPage />} />
                     <Route path="contact-submissions" element={<ContactSubmissions />} />
                     <Route path="settings" element={<Settings />} />
                   </Routes>
@@ -90,6 +104,7 @@ function App() {
                   <Route path="/renew-disabilities" element={<RenewDisabilities />} />
                   <Route path="/renew-carers" element={<RenewCarers />} />
                   <Route path="/renew-customer-support" element={<RenewCustomerSupport />} />
+                  <Route path="/track-card" element={<TrackCard />} />
                   <Route path="/donate" element={<DonateNow />} />
                   <Route path="/franchise" element={<BecomeFranchise />} />
                   <Route path="/contact" element={<Contact />} />
@@ -99,6 +114,7 @@ function App() {
             </>
           } />
         </Routes>
+        <Toaster position="top-right" />
       </div>
     </Router>
   );

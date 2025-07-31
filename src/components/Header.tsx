@@ -1,6 +1,7 @@
 import { ChevronDown, Heart, Menu, Phone, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +24,6 @@ const Header = () => {
         { label: 'About Us', path: '/about' },
         { label: 'CEO Word', path: '/ceo-word' },
         { label: 'Our Services', path: '/our-services' },
-        { label: 'Terms and Conditions', path: '/terms-conditions' },
       ],
     },
     {
@@ -54,9 +54,10 @@ const Header = () => {
       label: 'Lanyard',
       dropdown: [
         {
-          label: 'Verified Global Disability Lanyard',
+          label: 'Verified National Disability Lanyard',
           path: '/verified-lanyard',
         },
+        { label: 'Terms and Conditions', path: '/terms-conditions' },
       ],
     },
     {
@@ -99,6 +100,9 @@ const Header = () => {
               <span>Serving the UAE Community</span>
             </span>
           </div>
+          <div className="flex items-center space-x-4">
+          <LanguageSelector />
+        </div>
         </div>
       </div>
 
@@ -173,6 +177,7 @@ const Header = () => {
                   )}
                 </div>
               ))}
+              
             </nav>
 
             {/* Mobile Menu Button */}

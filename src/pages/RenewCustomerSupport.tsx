@@ -1,5 +1,6 @@
 import { ArrowRight, CheckCircle, Clock, Headphones, RefreshCw, Shield } from 'lucide-react';
 import React, { useState } from 'react';
+import { trackCard } from '../api/cardApi';
 
 const RenewCustomerSupport = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,11 @@ const RenewCustomerSupport = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [cardValidation, setCardValidation] = useState({
+    isValid: false,
+    isChecking: false,
+    message: ''
+  });
 
   const supportTypes = [
     'General Customer Support',
@@ -37,6 +43,58 @@ const RenewCustomerSupport = () => {
     'Other'
   ];
 
+  const validateCardNumber = async (cardNumber: string) => {
+    if (cardNumber.length < 3) {
+      setCardValidation({ isValid: false, isChecking: false, message: '' });
+      return;
+    }
+
+    setCardValidation({ isValid: false, isChecking: true, message: 'Validating card...' });
+
+    try {
+      const result = await trackCard(cardNumber);
+      
+      if (result.found && result.card) {
+        if (result.card.cardType !== 'customer-support') {
+          setCardValidation({ 
+            isValid: false, 
+            isChecking: false, 
+            message: 'This card is not a Customer Support Card. Please enter a valid Customer Support Card number.' 
+          });
+          return;
+        }
+
+        setCardValidation({ 
+          isValid: true, 
+          isChecking: false, 
+          message: `✓ Valid Customer Support Card found for ${result.card.cardholderName}` 
+        });
+
+        // Pre-fill form with available card data
+        const [firstName, ...lastNameParts] = result.card.cardholderName.split(' ');
+        const lastName = lastNameParts.join(' ');
+        
+        setFormData(prev => ({
+          ...prev,
+          firstName: firstName || '',
+          lastName: lastName || ''
+        }));
+      } else {
+        setCardValidation({ 
+          isValid: false, 
+          isChecking: false, 
+          message: 'Card not found. Please check your card number and try again.' 
+        });
+      }
+    } catch (error) {
+      setCardValidation({ 
+        isValid: false, 
+        isChecking: false, 
+        message: 'Error validating card. Please try again.' 
+      });
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
@@ -50,17 +108,29 @@ const RenewCustomerSupport = () => {
         ...formData,
         [name]: value
       });
+
+      // Validate card number when it changes
+      if (name === 'cardNumber') {
+        validateCardNumber(value);
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if card number is valid before submission
+    if (!cardValidation.isValid) {
+      setErrorMessage('Please enter a valid Customer Support Card number before submitting the renewal.');
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage('');
 
     try {
-      const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/renewal/customer-support', {
+      const response = await fetch('http://localhost:5253/api/renewal/customer-support', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,15 +170,22 @@ const RenewCustomerSupport = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gray-800 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section
+        className="relative py-20 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/support_renew.png')" }} // Replace with your image
+      >
+        {/* Green overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-uae-black opacity-70 via-black/40 to-uae-black opacity-70"></div>
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Renew Customer Support Card
+          Renew Customer Support Card
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Continue receiving enhanced assistance and priority support. Renew your 
-            Customer Support Card to maintain access to dedicated support services.
+          <p className="text-xl text-green-100 max-w-3xl mx-auto">
+          Continue receiving enhanced assistance and priority support. Renew your 
+          Customer Support Card to maintain access to dedicated support services.
           </p>
         </div>
       </section>
@@ -158,31 +235,47 @@ const RenewCustomerSupport = () => {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Current Card Information</h3>
                 <p className="text-sm text-blue-600 mb-4 bg-blue-50 p-3 rounded-lg">
-                  <strong>Note:</strong> Verification is based on your Emirates ID only. Card number is optional for reference.
+                  <strong>Note:</strong> Verification is based on your Customer Support Card Number. Please enter your valid Customer Support Card number.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Customer Support Card Number (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Customer Support Card Number *</label>
                     <input
                       type="text"
                       name="cardNumber"
+                      required
                       value={formData.cardNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter your current card number (optional)"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
+                      placeholder="Enter your current card number (required)"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800 ${
+                        cardValidation.isChecking ? 'border-blue-300' : 
+                        cardValidation.isValid ? 'border-green-300 bg-green-50' : 
+                        formData.cardNumber.length > 5 && !cardValidation.isValid ? 'border-red-300 bg-red-50' : 
+                        'border-gray-300'
+                      }`}
                     />
+                    {cardValidation.isChecking && (
+                      <p className="text-sm text-blue-600 mt-1 flex items-center">
+                        <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                        {cardValidation.message}
+                      </p>
+                    )}
+                    {!cardValidation.isChecking && cardValidation.message && (
+                      <p className={`text-sm mt-1 ${cardValidation.isValid ? 'text-green-600' : 'text-red-600'}`}>
+                        {cardValidation.message}
+                      </p>
+                    )}
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Emirates ID *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Emirates ID (Optional)</label>
                     <input
                       type="text"
                       name="emiratesId"
-                      required
                       value={formData.emiratesId}
                       onChange={handleInputChange}
-                      placeholder="784-XXXX-XXXXXXX-X"
+                      placeholder="784-XXXX-XXXXXXX-X (optional)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
                     />
                   </div>
@@ -400,7 +493,7 @@ const RenewCustomerSupport = () => {
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Renewal Fee</h3>
               <p className="text-3xl font-bold text-gray-800 mb-2">AED 50</p>
-              <p className="text-gray-600">One-time renewal fee for 3-year validity</p>
+              <p className="text-gray-600">One-time renewal fee for 2-year validity</p>
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-lg">

@@ -109,7 +109,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email Support",
-      details: ["info@nationaldisabilitycard.ae", "support@nationaldisabilitycard.ae"],
+      details: ["support@ndaid.help"],
       description: "Response within 24 hours"
     },
     {
@@ -150,19 +150,25 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <MessageCircle className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Contact Us
-            </h1>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              We're here to help you with any questions about our disability card services
-            </p>
-          </div>
-        </div>
-      </div>
+      <section
+  className="relative py-20 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url('/uae_1.jpg')" }} // Replace with your image path
+>
+    {/* Green overlay */}
+    <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-black/40 to-green-700 opacity-80"></div>
+
+  {/* Content */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+    <MessageCircle className="w-16 h-16 mx-auto mb-6" />
+    <h1 className="text-4xl md:text-5xl font-bold mb-6">
+      Contact Us
+    </h1>
+    <p className="text-xl text-green-100 max-w-3xl mx-auto">
+      We're here to help you with any questions about our disability card services
+    </p>
+  </div>
+</section>
+
 
       {/* Contact Information */}
       <div className="py-20">

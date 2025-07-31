@@ -20,7 +20,7 @@ const Footer = () => {
                 className="h-10 w-auto"
               />
               <div>
-                <h3 className="text-xl font-bold">NDA</h3>
+                <h3 className="text-xl font-bold">NDAid</h3>
                 <p className="text-sm text-uae-green">National Disability Aid</p>
               </div>
             </div>
@@ -32,14 +32,19 @@ const Footer = () => {
             
             {/* UAE Flag */}
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-6 rounded-sm overflow-hidden border border-gray-600">
-                <div className="w-full h-1/3 bg-uae-red"></div>
-                <div className="w-full h-1/3 bg-white"></div>
-                <div className="w-full h-1/3 bg-uae-black"></div>
-                <div className="absolute w-2 h-6 bg-uae-green"></div>
+              <div className="relative w-8 h-6 rounded-sm overflow-hidden border border-gray-600 flex">
+                {/* Red vertical bar */}
+                <div className="w-2 h-full bg-uae-red"></div>
+                {/* Horizontal stripes */}
+                <div className="flex flex-col w-6 h-full">
+                  <div className="h-1/3 w-full bg-uae-green"></div>
+                  <div className="h-1/3 w-full bg-white"></div>
+                  <div className="h-1/3 w-full bg-uae-black"></div>
+                </div>
               </div>
               <span className="text-sm text-gray-400">Proudly serving the UAE</span>
             </div>
+
             
             {/* Track My Card Button */}
             <div className="pt-4">
@@ -47,7 +52,6 @@ const Footer = () => {
                 onClick={() => setShowTrackModal(true)}
                 className="bg-uae-green text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
               >
-                <span>🔍</span>
                 <span>Track My Card</span>
               </button>
             </div>
@@ -129,11 +133,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-uae-green" />
-                <span className="text-gray-300 text-sm">+971 4 123 4567</span>
+                <span className="text-gray-300 text-sm">+971 X XXX XXX</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-uae-green" />
-                <span className="text-gray-300 text-sm">info@ NDAid.ae</span>
+                <span className="text-gray-300 text-sm">support@ndaid.help</span>
               </div>
             </div>
           </div>
@@ -143,7 +147,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 NDA - National Disability Aid. All rights reserved.
+              © 2025 NDAid - National Disability Aid. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy-policy" className="text-gray-400 hover:text-uae-green text-sm transition-colors duration-300">

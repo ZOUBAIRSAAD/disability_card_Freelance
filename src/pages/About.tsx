@@ -71,10 +71,11 @@ const About: React.FC = () => {
           alt="Dubai skyline"
           className="absolute inset-0 w-full h-96 md:h-[28rem] object-cover"
         />
+        <div className='absolute inset-0 bg-gradient-to-r from-green-600 via-black/40 to-green-700 opacity-80'/>
         <div className="relative z-10 flex flex-col items-start justify-center h-96 md:h-[28rem] px-4 md:px-16 bg-black/50 text-left">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">About Us</h1>
           <p className="text-base md:text-lg text-gray-200 max-w-3xl">
-            Welcome to National Disability Aid. At National Disability Aid, we understand that people with disabilities and their carers often face challenges in accessing the support and services they deserve. Our mission is to simplify this process and provide individuals with disabilities and their carers with essential identification that grants access to exclusive benefits, discounts, and facilities.
+          At <strong>National Disability Aid</strong>, we understand that people with disabilities and their carers often face challenges in accessing the support and services they deserve. Our mission is to simplify this process and provide individuals with disabilities and their carers with essential identification that grants access to exclusive benefits, discounts, and facilities. 
           </p>
         </div>
         {/* UAE flag accent bar */}
@@ -97,10 +98,10 @@ const About: React.FC = () => {
                 <strong>Many disabilities, conditions, or long-term health issues or chronic illnesses aren't immediately visible to others.</strong> This can sometimes make it difficult for people to understand and accept that someone with a non-visible condition genuinely requires support.
               </p>
               <p>
-                Often, individuals may be questioned or misunderstood simply because their disability isn't physically apparent. Wearing an NDAid card is a way to subtly let others know you might require extra help or patience – whether you're shopping, commuting, at work, or out in public.
+              Often, individuals may be questioned or misunderstood simply whether you have a disability because their disability isn’t physically apparent,That’s why we introduced the <strong>National Disability Aid (NDAid, s)</strong> to promote awareness, acceptance, and understanding.,  
               </p>
               <p>
-                Our goal is to foster awareness, acceptance and understanding so that everyone feels confident asking for and receiving the support they need.
+              <strong>NDA’s</strong>provide a simple way for individuals to voluntarily indicate that they have either a visible or hidden disability. By wearing <strong>NDA’s</strong>, you’re signaling that you may need a bit of extra time, help, support, understanding or patience from others.
               </p>
             </div>
             {/* Icon or illustration */}
@@ -113,7 +114,7 @@ const About: React.FC = () => {
             <div className="flex items-center space-x-4">
               <Globe className="w-12 h-12 text-uae-red" />
               <p className="text-lg md:text-xl font-medium text-uae-black">
-                <strong>Worldwide, around 1 in 6 people live with some form of disability – and it's estimated that up to 80% of these are non-visible.</strong>
+                <strong>Worldwide, around 1 in 6 people live with some form of disability – and it’s estimated that up to 80% of these are non-visible. That means over 1 billion people globally may face hidden challenges.</strong>
               </p>
             </div>
           </div>
@@ -205,9 +206,11 @@ const About: React.FC = () => {
       {/* Call-to-Action Section */}
       <section className="py-16 bg-uae-green text-white">
         <div className="container mx-auto px-4 max-w-5xl text-center">
-          <h2 className="text-3xl font-bold mb-4">Join Us in Promoting an Inclusive Future</h2>
+          <h2 className="text-3xl font-bold mb-4">Why the National Disability Card?</h2>
           <p className="max-w-xl mx-auto mb-8">
-            At National Disability Aid, we are passionate about promoting inclusivity and equality. By offering personalised Disability ID Cards, Carer Cards, and Customer Support Cards, we ensure that individuals with disabilities and their carers receive the recognition, rights, and services they deserve.
+          When a disability isn’t immediately visible, others may struggle to recognize or understand the daily obstacles a person might face. We looked for discreet signs that is, yet easily noticeable way and with distance as well to communicate this need for understanding.
+The NDAid Cards design is distinctive, positive, and uplifting, symbolizing resilience, growth, and confidence. It serves as a universal symbol of support and empathy Universally known.
+
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link

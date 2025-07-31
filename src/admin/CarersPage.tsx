@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Eye, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Search, Filter, Eye, CheckCircle, XCircle, Clock, CreditCard } from 'lucide-react';
 import { adminAPI, CarersApplication } from '../api/adminApi';
+import { useNotifications } from '../contexts/NotificationContext';
+import CreateOnlyCardModal from '../components/CreateOnlyCardModal';
 
 const CarersPage: React.FC = () => {
   const [applications, setApplications] = useState<CarersApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markAsViewed } = useNotifications();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState<CarersApplication | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateCardModal, setShowCreateCardModal] = useState(false);
+  const [selectedApplicationForCard, setSelectedApplicationForCard] = useState<CarersApplication | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -48,6 +53,17 @@ const CarersPage: React.FC = () => {
     } catch (error) {
       console.error('Error updating status:', error);
     }
+  };
+
+  const handleCreateCard = (application: CarersApplication) => {
+    setSelectedApplicationForCard(application);
+    setShowCreateCardModal(true);
+  };
+
+  const handleCardCreated = () => {
+    setShowCreateCardModal(false);
+    setSelectedApplicationForCard(null);
+    // Optionally refresh applications or show success message
   };
 
   const getStatusColor = (status: string) => {
@@ -304,9 +320,10 @@ const CarersPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setSelectedApplication(app);
                             setShowModal(true);
+                            markAsViewed('carers', app.id);
                           }}
                           className="text-blue-600 hover:text-blue-900"
                           title="View Details"
@@ -331,6 +348,15 @@ const CarersPage: React.FC = () => {
                             </button>
                           </>
                         )}
+                        {app.applicationStatus.toLowerCase() === 'approved' && (
+                          <button
+                            onClick={() => handleCreateCard(app)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Create Card"
+                          >
+                            <CreditCard className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -348,6 +374,25 @@ const CarersPage: React.FC = () => {
       {/* Modal */}
       {showModal && selectedApplication && (
         <ApplicationModal application={selectedApplication} />
+      )}
+
+      {/* Create Card Modal */}
+      {showCreateCardModal && selectedApplicationForCard && (
+        <CreateOnlyCardModal
+          isOpen={showCreateCardModal}
+          onClose={() => {
+            setShowCreateCardModal(false);
+            setSelectedApplicationForCard(null);
+          }}
+          onCardCreated={handleCardCreated}
+          applicationData={{
+            id: selectedApplicationForCard.id,
+            firstName: selectedApplicationForCard.firstName,
+            lastName: selectedApplicationForCard.lastName,
+            cardType: 'carer',
+            applicationType: 'carer'
+          }}
+        />
       )}
     </div>
   );

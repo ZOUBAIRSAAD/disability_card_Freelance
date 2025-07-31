@@ -509,17 +509,30 @@ const ApplyCustomerSupport = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gray-800 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+      <section>
+        {/* Hero Section with new background image */}
+      <div className="relative text-white py-20">
+        <img
+          src="/support_applay.png"
+          alt="Abu Dhabi skyline with UAE flag"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Gradient overlay for readability and brand colours */}
+        <div className="absolute inset-0 bg-gradient-to-r from-uae-black opacity-70 via-black/40 to-uae-black opacity-70"></div>
+        {/* Hero content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Headphones className="w-16 h-16 mx-auto mb-6 text-white" />
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Apply for Customer Support Card
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          Apply for Customer Support Card
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Get enhanced assistance and priority support for daily activities. 
+          <p className="text-xl text-green-100 max-w-3xl mx-auto">
+          Get enhanced assistance and priority support for daily activities. 
             Access dedicated support services and personal assistance when you need it most.
           </p>
         </div>
+      </div>
+
       </section>
 
       {/* Application Process Info */}

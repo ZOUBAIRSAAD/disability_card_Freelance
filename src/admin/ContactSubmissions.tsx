@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Eye, Trash2, Clock, CheckCircle, X, Phone, MessageSquare } from 'lucide-react';
 import { adminAPI, ContactSubmission } from '../api/adminApi';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const ContactSubmissions: React.FC = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -10,6 +11,7 @@ const ContactSubmissions: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const { markAsViewed } = useNotifications();
 
   useEffect(() => {
     fetchSubmissions();
@@ -33,6 +35,7 @@ const ContactSubmissions: React.FC = () => {
       const submission = await adminAPI.getContactSubmissionById(id);
       setSelectedSubmission(submission);
       setShowDetailsModal(true);
+      markAsViewed('contact', id);
     } catch (error) {
       console.error('Error fetching submission details:', error);
     }

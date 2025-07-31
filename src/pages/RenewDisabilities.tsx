@@ -1,5 +1,6 @@
 import { ArrowRight, CheckCircle, Clock, CreditCard, RefreshCw, Shield } from 'lucide-react';
 import React, { useState } from 'react';
+import { trackCard } from '../api/cardApi';
 
 const RenewDisabilities = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,17 @@ const RenewDisabilities = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [cardValidation, setCardValidation] = useState<{
+    isChecking: boolean;
+    isValid: boolean;
+    cardData: any;
+    message: string;
+  }>({
+    isChecking: false,
+    isValid: false,
+    cardData: null,
+    message: ''
+  });
 
   const renewalReasons = [
     'Card expiring soon',
@@ -40,16 +52,88 @@ const RenewDisabilities = () => {
         [name]: value
       });
     }
+
+    // If card number is being changed, validate it
+    if (name === 'cardNumber' && value.length > 5) {
+      validateCardNumber(value);
+    } else if (name === 'cardNumber' && value.length <= 5) {
+      setCardValidation({
+        isChecking: false,
+        isValid: false,
+        cardData: null,
+        message: ''
+      });
+    }
+  };
+
+  const validateCardNumber = async (cardNumber: string) => {
+    setCardValidation({
+      isChecking: true,
+      isValid: false,
+      cardData: null,
+      message: 'Validating card number...'
+    });
+
+    try {
+      const result = await trackCard(cardNumber);
+      
+      if (result.found && result.card) {
+        // Check if the card type matches (disability card)
+        if (result.card.cardType.toLowerCase().includes('disability')) {
+          setCardValidation({
+            isChecking: false,
+            isValid: true,
+            cardData: result.card,
+            message: `Valid card found for ${result.card.cardholderName}`
+          });
+          
+          // Pre-fill form data if possible
+          setFormData(prev => ({
+            ...prev,
+            firstName: result.card?.cardholderName.split(' ')[0] || prev.firstName,
+            lastName: result.card?.cardholderName.split(' ').slice(1).join(' ') || prev.lastName
+          }));
+        } else {
+          setCardValidation({
+            isChecking: false,
+            isValid: false,
+            cardData: null,
+            message: 'This card is not a Disability Card. Please use a valid Disability Card number.'
+          });
+        }
+      } else {
+        setCardValidation({
+          isChecking: false,
+          isValid: false,
+          cardData: null,
+          message: 'Card not found. Please check your card number.'
+        });
+      }
+    } catch (error) {
+      setCardValidation({
+        isChecking: false,
+        isValid: false,
+        cardData: null,
+        message: 'Error validating card. Please try again.'
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if card is valid before submitting
+    if (!cardValidation.isValid) {
+      setErrorMessage('Please enter a valid Disability Card number before submitting.');
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage('');
 
     try {
-      const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/renewal/disabilities', {
+      const response = await fetch('http://localhost:5253/api/renewal/disabilities', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,18 +171,25 @@ const RenewDisabilities = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-uae-green py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Renew Disabilities Card
-          </h1>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Keep your benefits active by renewing your Disabilities Card. 
-            Simple process to continue accessing all your support services.
-          </p>
-        </div>
-      </section>
+      <section
+  className="relative py-20 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url('/disa_renew.png')" }} // Replace with your image
+>
+  {/* Green overlay */}
+  <div className="absolute inset-0 bg-green-900/60"></div>
+
+  {/* Content */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      Renew Disabilities Card
+    </h1>
+    <p className="text-xl text-green-100 max-w-3xl mx-auto">
+      Keep your benefits active by renewing your Disabilities Card. 
+      Simple process to continue accessing all your support services.
+    </p>
+  </div>
+</section>
 
       {/* Renewal Benefits */}
       <section className="py-12 bg-white">
@@ -145,31 +236,47 @@ const RenewDisabilities = () => {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Current Card Information</h3>
                 <p className="text-sm text-blue-600 mb-4 bg-blue-50 p-3 rounded-lg">
-                  <strong>Note:</strong> Verification is based on your Emirates ID only. Card number is optional for reference.
+                  <strong>Note:</strong> Verification is based on your Card Number. Please enter your valid Disability Card number.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Card Number (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Card Number *</label>
                     <input
                       type="text"
                       name="cardNumber"
+                      required
                       value={formData.cardNumber}
                       onChange={handleInputChange}
-                      placeholder="Enter your current card number (optional)"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-green focus:border-uae-green"
+                      placeholder="Enter your current card number (required)"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-uae-green focus:border-uae-green ${
+                        cardValidation.isChecking ? 'border-blue-300' : 
+                        cardValidation.isValid ? 'border-green-300 bg-green-50' : 
+                        formData.cardNumber.length > 5 && !cardValidation.isValid ? 'border-red-300 bg-red-50' : 
+                        'border-gray-300'
+                      }`}
                     />
+                    {cardValidation.isChecking && (
+                      <p className="text-sm text-blue-600 mt-1 flex items-center">
+                        <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                        {cardValidation.message}
+                      </p>
+                    )}
+                    {!cardValidation.isChecking && cardValidation.message && (
+                      <p className={`text-sm mt-1 ${cardValidation.isValid ? 'text-green-600' : 'text-red-600'}`}>
+                        {cardValidation.message}
+                      </p>
+                    )}
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Emirates ID *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Emirates ID (Optional)</label>
                     <input
                       type="text"
                       name="emiratesId"
-                      required
                       value={formData.emiratesId}
                       onChange={handleInputChange}
-                      placeholder="784-XXXX-XXXXXXX-X"
+                      placeholder="784-XXXX-XXXXXXX-X (optional)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-green focus:border-uae-green"
                     />
                   </div>

@@ -13,8 +13,14 @@ const CarersCard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-uae-red to-red-700 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        className="relative py-20 bg-center bg-cover"
+        style={{ backgroundImage: "url('/uae_7.jpg')" }}
+      >
+        {/* Gradient + Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <div className="flex items-center space-x-3 mb-6">
@@ -25,10 +31,7 @@ const CarersCard: React.FC = () => {
                 National Carer Card
               </h1>
               <p className="text-xl text-red-100 mb-8 leading-relaxed">
-                Personalized cards for those who provide care and support to
-                individuals with disabilities. These cards recognise the vital role
-                of carers and enable them to access priority services, discounts,
-                and support across the UAE.
+              Our Personalized Cards are for individuals who provide care and support to those with disabilities. These cards recognize the vital role of carers and enable them to access priority services, discounts, and support across the UAE, making their caregiving roles easier and more manageable.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -46,6 +49,8 @@ const CarersCard: React.FC = () => {
                 </Link>
               </div>
             </div>
+
+            {/* Card Preview */}
             <div className="flex justify-center">
               <div className="relative">
                 <div className="w-96 h-60 rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300 overflow-hidden">
@@ -60,6 +65,7 @@ const CarersCard: React.FC = () => {
           </div>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-white">

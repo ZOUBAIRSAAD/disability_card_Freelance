@@ -52,13 +52,13 @@ const RenewalsPage: React.FC = () => {
       
       // Fetch all renewal types
       const [disabilitiesRes, carersRes, customerSupportRes] = await Promise.all([
-        fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/admin/renewals/disabilities', {
+        fetch('http://localhost:5253/api/admin/renewals/disabilities', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/admin/renewals/carers', {
+        fetch('http://localhost:5253/api/admin/renewals/carers', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/admin/renewals/customer-support', {
+        fetch('http://localhost:5253/api/admin/renewals/customer-support', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -148,7 +148,7 @@ const RenewalsPage: React.FC = () => {
         urlType = 'customer-support';
       }
       
-      const response = await fetch(`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/admin/renewals/${urlType}/${id}/status`, {
+      const response = await fetch(`http://localhost:5253/api/admin/renewals/${urlType}/${id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
