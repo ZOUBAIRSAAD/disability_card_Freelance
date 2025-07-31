@@ -1,12 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>National Disability Aid - UAE | Official Services</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- Google Translate -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'en',
+            includedLanguages: 'en,ar,fr,es',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+          },
+          'google_translate_element'
+        );
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+      /* Hide the Google Translate top banner */
+      .goog-te-banner-frame.skiptranslate {
+          display: none !important;
+      }
+      body {
+          top: 0px !important;
+      }
+    </style>
   </head>
   <body>
+    <div id="google_translate_element"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

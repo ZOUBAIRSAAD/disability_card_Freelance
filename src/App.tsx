@@ -26,6 +26,7 @@ import RenewCustomerSupport from './pages/RenewCustomerSupport';
 import DonateNow from './pages/DonateNow';
 import BecomeFranchise from './pages/BecomeFranchise';
 import Contact from './pages/Contact';
+import useGoogleTranslate from './hooks/useGoogleTranslate';
 
 // Admin Components
 import Login from './admin/Login';
@@ -40,6 +41,7 @@ import RenewalsPage from './admin/RenewalsPage';
 import Settings from './admin/Settings';
 
 function App() {
+  useGoogleTranslate();
   return (
     <Router>
       <div className="min-h-screen bg-white">

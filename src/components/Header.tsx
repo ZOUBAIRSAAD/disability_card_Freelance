@@ -1,6 +1,7 @@
 import { ChevronDown, Heart, Menu, Phone, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -99,6 +100,9 @@ const Header = () => {
               <span>Serving the UAE Community</span>
             </span>
           </div>
+          <div className="flex items-center space-x-4">
+          <LanguageSelector />
+        </div>
         </div>
       </div>
 
@@ -173,6 +177,7 @@ const Header = () => {
                   )}
                 </div>
               ))}
+              
             </nav>
 
             {/* Mobile Menu Button */}
