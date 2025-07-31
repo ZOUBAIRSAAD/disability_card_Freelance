@@ -60,19 +60,27 @@ const DonateNow = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-uae-red to-red-700 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Heart className="w-16 h-16 mx-auto mb-6 text-white" />
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Donate Now
-          </h1>
-          <p className="text-xl text-red-100 max-w-3xl mx-auto">
-            Your generous donation helps us provide essential services and support 
-            to individuals with disabilities and their caregivers across the UAE.
-          </p>
-        </div>
-      </section>
+{/* Hero Section */}
+<section
+  className="relative py-20 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url('/donation.jpg')" }} // Replace with your image
+>
+  {/* Red overlay */}
+  <div className="absolute inset-0 bg-red-900/60"></div>
+
+  {/* Content */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <Heart className="w-16 h-16 mx-auto mb-6 text-white" />
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      Donate Now
+    </h1>
+    <p className="text-xl text-red-100 max-w-3xl mx-auto">
+      Your generous donation helps us provide essential services and support 
+      to individuals with disabilities and their caregivers across the UAE.
+    </p>
+  </div>
+</section>
+
 
       {/* Impact Areas */}
       <section className="py-20 bg-white">

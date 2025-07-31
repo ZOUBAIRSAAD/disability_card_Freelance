@@ -5,10 +5,17 @@ import { Link } from 'react-router-dom';
 const CEOWord = () => {
   return (
     <main>
-      {/* Hero Section: gradient background and accent bar */}
+      {/* Hero Section: background image with neutral overlay */}
       <section className="relative">
-        <div className="bg-gradient-to-r from-uae-red via-uae-black to-uae-green">
-          <div className="flex flex-col items-center justify-center h-80 text-center px-4 py-16">
+        <div
+          className="relative flex flex-col items-center justify-center h-80 text-center px-4 py-16 bg-cover bg-center"
+          style={{ backgroundImage: "url('/uae_8.jpg')" }}
+        >
+          {/* Neutral black overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-black/40 to-green-700 opacity-80"></div>
+
+          {/* Content */}
+          <div className="relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               A Word from Our CEO
             </h1>
@@ -16,15 +23,17 @@ const CEOWord = () => {
               Leading the mission to create an inclusive society for all
             </p>
           </div>
-          {/* UAE flag accent bar at bottom of hero */}
-          <div className="flex w-full h-1">
-            <div className="flex-1 bg-uae-red"></div>
-            <div className="flex-1 bg-white"></div>
-            <div className="flex-1 bg-uae-black"></div>
-            <div className="flex-1 bg-uae-green"></div>
-          </div>
+        </div>
+
+        {/* UAE flag accent bar at bottom of hero */}
+        <div className="flex w-full h-1">
+          <div className="flex-1 bg-uae-red"></div>
+          <div className="flex-1 bg-white"></div>
+          <div className="flex-1 bg-uae-black"></div>
+          <div className="flex-1 bg-uae-green"></div>
         </div>
       </section>
+
 
       {/* CEO Message Section */}
       <section className="py-12 bg-gray-50">

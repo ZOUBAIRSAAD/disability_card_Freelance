@@ -388,19 +388,43 @@ const ApplyVerifiedLanyard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-blue-600 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-4xl mb-6">🏷️</div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Apply for Verified Lanyard
-          </h1>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-            Get your internationally recognized lanyard for discreet identification 
-            of non-visible disabilities. Simple application process for existing cardholders.
-          </p>
-        </div>
-      </section>
+
+{/* Hero Section */}
+<section 
+  className="relative py-20 bg-cover bg-center bg-no-repeat" 
+  style={{ backgroundImage: "url('/lanyard_vf.png')" }} // Replace with your image
+>
+  {/* Dark overlay */}
+  <div className="absolute inset-0 bg-black/50"></div>
+
+  {/* Content */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div className="flex justify-center mb-6">
+      {/* Lanyard-like icon */}
+      <svg
+        className="w-12 h-12 text-white"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <rect x="5" y="7" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M12 7v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </div>
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      Apply for Verified Lanyard
+    </h1>
+    <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+      Get your internationally recognized lanyard for discreet identification 
+      of non-visible disabilities. Simple application process for existing cardholders.
+    </p>
+  </div>
+</section>
+
+
 
       {/* Application Process Info */}
       <section className="py-12 bg-white">

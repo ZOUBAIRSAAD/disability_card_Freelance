@@ -23,7 +23,6 @@ const Header = () => {
         { label: 'About Us', path: '/about' },
         { label: 'CEO Word', path: '/ceo-word' },
         { label: 'Our Services', path: '/our-services' },
-        { label: 'Terms and Conditions', path: '/terms-conditions' },
       ],
     },
     {
@@ -54,9 +53,10 @@ const Header = () => {
       label: 'Lanyard',
       dropdown: [
         {
-          label: 'Verified Global Disability Lanyard',
+          label: 'Verified National Disability Lanyard',
           path: '/verified-lanyard',
         },
+        { label: 'Terms and Conditions', path: '/terms-conditions' },
       ],
     },
     {

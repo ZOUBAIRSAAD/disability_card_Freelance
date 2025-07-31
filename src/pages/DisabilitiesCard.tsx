@@ -14,8 +14,15 @@ const DisabilitiesCard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-uae-green to-green-700 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Hero Section */}
+      <section
+        className="relative bg-gradient-to-br from-uae-green to-green-700 py-20 bg-center bg-cover"
+        style={{ backgroundImage: "url('/uae_3.jpg')" }}
+      >
+        {/* Overlay (optional for readability) */}
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <div className="flex items-center space-x-3 mb-6">
@@ -26,10 +33,7 @@ const DisabilitiesCard: React.FC = () => {
                 National Disability ID Card
               </h1>
               <p className="text-xl text-green-100 mb-8 leading-relaxed">
-                Personalized National Disability ID Cards are official forms of
-                identification designed to grant individuals with disabilities
-                access to the benefits and services they are entitled to under the
-                UAE’s Federal Law.
+              Our Personalized <strong>National Disability ID Cards</strong> are official forms of identification designed to grant individuals with disabilities access to the benefits and services they are entitled to under the UAE’s Federal Law, ensuring their legal rights and access to services across the Emirates.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -47,6 +51,7 @@ const DisabilitiesCard: React.FC = () => {
                 </Link>
               </div>
             </div>
+
             {/* Card Preview */}
             <div className="flex justify-center">
               <div className="relative">
@@ -62,6 +67,7 @@ const DisabilitiesCard: React.FC = () => {
           </div>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-white">

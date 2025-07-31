@@ -14,8 +14,14 @@ const CustomerSupportCard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-uae-black to-gray-800 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        className="relative py-20 bg-center bg-cover"
+        style={{ backgroundImage: "url('/uae_6.jpg')" }}
+      >
+        {/* Dark Overlay for text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <div className="flex items-center space-x-3 mb-6">
@@ -26,10 +32,7 @@ const CustomerSupportCard: React.FC = () => {
                 Customer Support Card
               </h1>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Specially designed for individuals working in customer support
-                roles. These cards provide access to exclusive discounts and
-                services at a wide range of participating venues across the UAE,
-                including events, hotels, restaurants, shopping malls, and more.
+              In addition to the National Disability Card and National Carer Cards, we also offer Customer Support Cards specially designed for individuals working in customer support roles. These cards provide access to exclusive discounts and services at a wide range of participating venues across the UAE, including events, hotels, restaurants, shopping malls, and more.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -47,6 +50,8 @@ const CustomerSupportCard: React.FC = () => {
                 </Link>
               </div>
             </div>
+
+            {/* Card Preview */}
             <div className="flex justify-center">
               <div className="relative">
                 <div className="w-96 h-60 rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300 overflow-hidden">
@@ -61,6 +66,7 @@ const CustomerSupportCard: React.FC = () => {
           </div>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-white">

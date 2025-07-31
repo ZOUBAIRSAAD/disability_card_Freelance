@@ -99,16 +99,25 @@ const RenewCustomerSupport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+
       {/* Hero Section */}
-      <section className="bg-gray-800 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section
+        className="relative py-20 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/support_renew.png')" }} // Replace with your image
+      >
+        {/* Green overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-uae-black opacity-70 via-black/40 to-uae-black opacity-70"></div>
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Renew Customer Support Card
+          Renew Customer Support Card
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Continue receiving enhanced assistance and priority support. Renew your 
-            Customer Support Card to maintain access to dedicated support services.
+          <p className="text-xl text-green-100 max-w-3xl mx-auto">
+          Continue receiving enhanced assistance and priority support. Renew your 
+          Customer Support Card to maintain access to dedicated support services.
           </p>
         </div>
       </section>

@@ -90,20 +90,27 @@ const RenewCarers = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
       {/* Hero Section */}
-      <section className="bg-uae-red py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section
+        className="relative py-20 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/carer_renew.png')" }} // Replace with your image
+      >
+        {/* Green overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-uae-red opacity-70 via-black/40 to-uae-red opacity-70"></div>
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Renew Carers Card
+          Renew Carers Card
           </h1>
-          <p className="text-xl text-red-100 max-w-3xl mx-auto">
-            Continue your recognition as a dedicated caregiver. Renew your Carers Card 
-            to maintain access to support services and caregiver benefits.
+          <p className="text-xl text-green-100 max-w-3xl mx-auto">
+          Continue your recognition as a dedicated caregiver. Renew your Carers Card 
+          to maintain access to support services and caregiver benefits.
           </p>
         </div>
       </section>
-
       {/* Renewal Benefits */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

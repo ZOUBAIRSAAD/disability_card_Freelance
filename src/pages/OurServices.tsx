@@ -68,9 +68,10 @@ const OurServices: React.FC = () => {
                 <Heart className="w-12 h-12 mb-4" />
                 <h3 className="text-2xl font-bold mb-2">Disability ID Cards</h3>
                 <p className="text-white/90">
-                  Personalized National Disability ID Cards are official forms of identification
-                  designed to grant individuals with disabilities access to the benefits and
-                  services they are entitled to under the UAE’s Federal Law.
+                Our Personalized National Disability ID Cards are official forms of identification designed to grant individuals with disabilities access to the benefits and services they are entitled to under the UAE’s Federal Law, ensuring their legal rights and access to services across the Emirates.
+                </p>
+                <p>
+                At National Disability Aid, we are dedicated to creating a future where everyone has access to the services, support, and respect they deserve. By working together, we can make the UAE a more accessible and inclusive place for people with disabilities and their carers and the dedicated customer service professionals who support them every day
                 </p>
               </div>
               <div className="p-8">
@@ -140,10 +141,10 @@ const OurServices: React.FC = () => {
                 <Users className="w-12 h-12 mb-4" />
                 <h3 className="text-2xl font-bold mb-2">National Carer Card</h3>
                 <p className="text-white/90">
-                  Personalized cards for those who provide care and support to individuals
-                  with disabilities. These cards recognise the vital role of carers and
-                  enable them to access priority services, discounts, and support across
-                  the UAE.
+                The National Carer Card is for individuals who provide care and support to someone with a disability. This card allows carers to access vital services, priority assistance, and various benefits that make their caregiving roles easier and more manageable.
+                </p>
+                <p>
+                Our Personalized Cards are for individuals who provide care and support to those with disabilities. These cards recognize the vital role of carers and enable them to access priority services, discounts, and support across the UAE, making their caregiving roles easier and more manageable.
                 </p>
               </div>
               <div className="p-8">
@@ -226,10 +227,10 @@ const OurServices: React.FC = () => {
                 <Shield className="w-12 h-12 mb-4" />
                 <h3 className="text-2xl font-bold mb-2">Customer Support Cards</h3>
                 <p className="text-white/90">
-                  Specially designed for individuals working in customer support roles.
-                  These cards provide access to exclusive discounts and services at a wide
-                  range of participating venues across the UAE, including events,
-                  hotels, restaurants, shopping malls, and more.
+                In addition to the National Disability Card and National Carer Cards, we also offer Customer Support Cards specially designed for individuals working in customer support roles. These cards provide access to exclusive discounts and services at a wide range of participating venues across the UAE, including events, hotels, restaurants, shopping malls, and more.
+                </p>
+                <p>
+                These cards recognize the valuable contributions of customer support professionals and aim to make every day experiences more rewarding and accessible. 
                 </p>
               </div>
               <div className="p-8">

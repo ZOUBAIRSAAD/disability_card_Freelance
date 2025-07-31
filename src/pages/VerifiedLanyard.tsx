@@ -80,76 +80,97 @@ const VerifiedLanyard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-700 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20">
+        {/* Background with black overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/lanyard_vf.png')" }}
+        />
+        <div className="absolute inset-0 bg-black/50" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="text-4xl">🏷️</div>
-                <span className="text-lg font-medium">Global Recognition</span>
+                <span className="text-lg font-medium">National Recognition</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Verified Global Disability Lanyard
+                Verified National Disability Lanyard
               </h1>
-              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-200 mb-8 leading-relaxed">
                 A discreet way to indicate that you have a non-visible disability and may need 
-                additional support, patience, or understanding. Recognized internationally 
+                additional support, patience, or understanding. Recognized nationally 
                 and accepted by major service providers worldwide.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/apply-verified-lanyard"
-                  className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
+                  className="inline-flex items-center px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
                 >
                   Apply Now
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-300"
+                  className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
                 >
                   Get Information
                 </Link>
               </div>
             </div>
-            
-            {/* Lanyard Preview */}
-            <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-80 h-96 bg-gradient-to-b from-blue-100 to-blue-50 rounded-2xl p-8 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <div className="text-2xl text-white">🏷️</div>
-                    </div>
-                    <h3 className="text-2xl font-bold text-blue-900 mb-4">Global Disability Lanyard</h3>
-                    <p className="text-blue-700 mb-6">Hidden Disabilities</p>
-                    
-                    <div className="bg-white rounded-lg p-4 mb-6 shadow-md">
-                      <div className="w-full h-20 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">VERIFIED</span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-xs text-blue-600 space-y-1">
-                      <p>Internationally Recognized</p>
-                      <p>Valid Worldwide</p>
-                      <p>UAE Certified</p>
-                    </div>
-                  </div>
-                  
-                  {/* UAE Flag Corner */}
-                  <div className="absolute top-4 right-4 w-8 h-6 rounded-sm overflow-hidden opacity-60">
-                    <div className="w-full h-1/3 bg-red-500"></div>
-                    <div className="w-full h-1/3 bg-white"></div>
-                    <div className="w-full h-1/3 bg-black"></div>
-                    <div className="absolute left-0 top-0 w-1/4 h-full bg-green-600"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+{/* Lanyard Preview */}
+<div className="flex justify-center">
+  <div className="relative">
+    <div 
+      className="w-80 h-96 rounded-2xl p-8 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300"
+      style={{ backgroundColor: "#26449a" }}
+    >
+      <div className="text-center">
+        {/* Icon Circle */}
+        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="text-2xl" style={{ color: "#26449a" }}>🏷️</div>
+        </div>
+
+        <h3 className="text-2xl font-bold text-white mb-4">
+          Global Disability Lanyard
+        </h3>
+        <p className="text-blue-100 mb-6">Hidden Disabilities</p>
+        
+        {/* Verified Badge */}
+        <div className="bg-white rounded-lg p-4 mb-6 shadow-md">
+          <div 
+            className="w-full h-20 rounded-lg flex items-center justify-center"
+            style={{ background: "linear-gradient(to right, #4f6ad9, #26449a)" }}
+          >
+            <span className="text-white font-bold text-lg">VERIFIED</span>
+          </div>
+        </div>
+        
+        <div className="text-xs text-white space-y-1">
+          <p>Internationally Recognized</p>
+          <p>Valid Worldwide</p>
+          <p>UAE Certified</p>
+        </div>
+      </div>
+      
+      {/* UAE Flag Corner */}
+      <div className="absolute top-4 right-4 w-8 h-6 rounded-sm overflow-hidden opacity-60">
+        <div className="w-full h-1/3 bg-red-500"></div>
+        <div className="w-full h-1/3 bg-white"></div>
+        <div className="w-full h-1/3 bg-black"></div>
+        <div className="absolute left-0 top-0 w-1/4 h-full bg-green-600"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
           </div>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-white">

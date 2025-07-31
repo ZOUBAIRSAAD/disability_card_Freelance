@@ -86,19 +86,27 @@ const RenewDisabilities = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-uae-green py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Renew Disabilities Card
-          </h1>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Keep your benefits active by renewing your Disabilities Card. 
-            Simple process to continue accessing all your support services.
-          </p>
-        </div>
-      </section>
+{/* Hero Section */}
+<section
+  className="relative py-20 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url('/disa_renew.png')" }} // Replace with your image
+>
+  {/* Green overlay */}
+  <div className="absolute inset-0 bg-green-900/60"></div>
+
+  {/* Content */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <RefreshCw className="w-16 h-16 mx-auto mb-6 text-white" />
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      Renew Disabilities Card
+    </h1>
+    <p className="text-xl text-green-100 max-w-3xl mx-auto">
+      Keep your benefits active by renewing your Disabilities Card. 
+      Simple process to continue accessing all your support services.
+    </p>
+  </div>
+</section>
+
 
       {/* Renewal Benefits */}
       <section className="py-12 bg-white">
