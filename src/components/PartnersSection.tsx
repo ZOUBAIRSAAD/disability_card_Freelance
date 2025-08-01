@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Star, MapPin, Phone, Globe } from 'lucide-react';
-import { partnersApi, Partner } from '../api/partnersApi';
+import { MapPin, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Partner, partnersApi } from '../api/partnersApi';
 
 const PartnersSection = () => {
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -66,7 +66,7 @@ const PartnersSection = () => {
               <div className="h-32 bg-gray-100 overflow-hidden flex items-center justify-center">
                 {partner.logo ? (
                   <img
-                    src={partner.logo.startsWith('http') ? partner.logo : `http://localhost:5253${partner.logo}`}
+                    src={partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${partner.logo}`}
                     alt={partner.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
