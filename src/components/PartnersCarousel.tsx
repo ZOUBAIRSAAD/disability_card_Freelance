@@ -116,30 +116,32 @@ const PartnersCarousel: React.FC = () => {
             >
               {partner.logo ? (
                 <div
-                  className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center hover:shadow-md transition-shadow"
-                  style={{ width: '12rem', height: '6rem' }}
-                >
+                className="relative bg-white rounded-2xl p-4 shadow-md flex items-center justify-center hover:shadow-xl transition-transform transform hover:-translate-y-1 hover:scale-105"
+                style={{ width: '12rem', height: '7rem' }}
+              >
+                {/* Discount Badge */}
+                {partner.discount && (
+                  <span className="absolute top-2 right-2 bg-gradient-to-r from-green-600 to-green-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    {partner.discount} OFF
+                  </span>
+                )}
+              
+                {/* Partner Logo */}
+                {partner.logo ? (
                   <img
                     src={partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${partner.logo}`}
                     alt={partner.name}
                     className="h-full w-full object-contain"
-                    onError={(e) => {
-                      // Fallback to partner name if image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const fallback = target.parentElement?.querySelector('.fallback-text');
-                      if (fallback) {
-                        (fallback as HTMLElement).style.display = 'flex';
-                      }
-                    }}
                   />
-                  <div
-                    className="fallback-text hidden items-center justify-center text-sm font-semibold text-gray-700 text-center w-full h-full"
-                    style={{ display: 'none' }}
-                  >
+                ) : (
+                  <div className="text-green-600 text-lg font-bold">
                     {partner.name}
                   </div>
-                </div>
+                )}
+              </div>
+              
+              
+              
               ) : (
                 <div
                   className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 hover:shadow-md transition-shadow"
