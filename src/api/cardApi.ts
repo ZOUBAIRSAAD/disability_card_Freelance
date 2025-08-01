@@ -1,5 +1,5 @@
 // API functions for card management
-const BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api';
+const BASE_URL = 'http://localhost:5253/api';
 
 export interface Card {
   id: number;

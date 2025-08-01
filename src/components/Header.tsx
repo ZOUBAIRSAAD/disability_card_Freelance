@@ -108,7 +108,7 @@ const Header = () => {
 
       {/* Main Header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 overflow-visible transition-all duration-300 ${
           isScrolled ? 'bg-white shadow-lg' : 'bg-white'
         }`}
       >

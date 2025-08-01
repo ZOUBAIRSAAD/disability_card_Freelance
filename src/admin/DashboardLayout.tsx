@@ -51,7 +51,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
                 {profile?.profilePicture ? (
                   <img 
-                    src={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${profile.profilePicture}`} 
+                    src={`http://localhost:5253/${profile.profilePicture}`} 
                     alt="Profile" 
                     className="w-full h-full object-cover"
                   />

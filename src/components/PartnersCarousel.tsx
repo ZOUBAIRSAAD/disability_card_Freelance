@@ -23,7 +23,7 @@ const PartnersCarousel: React.FC = () => {
     // Fetch partners from API
     const fetchPartners = async () => {
       try {
-        const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/partners');
+        const response = await fetch('http://localhost:5253/api/partners');
         if (response.ok) {
           const data = await response.json();
           // Take only first 8 partners for the carousel
@@ -129,7 +129,7 @@ const PartnersCarousel: React.FC = () => {
                 {/* Partner Logo */}
                 {partner.logo ? (
                   <img
-                    src={partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${partner.logo}`}
+                    src={partner.logo.startsWith('http') ? partner.logo : `http://localhost:5253/${partner.logo}`}
                     alt={partner.name}
                     className="h-full w-full object-contain"
                   />

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Globe, ChevronDown } from 'lucide-react';
-import useGoogleTranslate from './../hooks/useGoogleTranslate'
+import useGoogleTranslate from './../hooks/useGoogleTranslate';
+import { createPortal } from 'react-dom';
 
 interface Language {
   code: string;
@@ -107,25 +108,35 @@ const LanguageSelector: React.FC = () => {
       </button>
 
       {/* Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-          {languages.map((language) => (
-            <button
-              key={language.code}
-              onClick={() => handleLanguageChange(language)}
-              className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-150 ${
-                currentLanguage.code === language.code ? 'bg-uae-green/10 text-uae-green' : 'text-gray-700'
-              }`}
-            >
-              <span className="text-lg">{language.flag}</span>
-              <span className="font-medium">{language.name}</span>
-              {currentLanguage.code === language.code && (
-                <div className="ml-auto w-2 h-2 bg-uae-green rounded-full"></div>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
+      {isOpen &&
+  createPortal(
+    <div
+      className="absolute bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[9999] w-48"
+      style={{
+        top: `${dropdownRef.current?.getBoundingClientRect().bottom ?? 0}px`,
+        left: `${(dropdownRef.current?.getBoundingClientRect().right ?? 0) - 192}px`, // 192px = 48 * 4
+        position: 'fixed'
+      }}
+    >
+      {languages.map((language) => (
+        <button
+          key={language.code}
+          onClick={() => handleLanguageChange(language)}
+          className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-150 ${
+            currentLanguage.code === language.code ? 'bg-uae-green/10 text-uae-green' : 'text-gray-700'
+          }`}
+        >
+          <span className="text-lg">{language.flag}</span>
+          <span className="font-medium">{language.name}</span>
+          {currentLanguage.code === language.code && (
+            <div className="ml-auto w-2 h-2 bg-uae-green rounded-full"></div>
+          )}
+        </button>
+      ))}
+    </div>,
+    document.body
+  )}
+
     </div>
   );
 };
