@@ -160,6 +160,7 @@ const RenewCarers = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
       {/* Hero Section */}
       <section
         className="relative py-20 bg-cover bg-center bg-no-repeat"
@@ -180,7 +181,6 @@ const RenewCarers = () => {
           </p>
         </div>
       </section>
-
       {/* Renewal Benefits */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -46,8 +46,10 @@ import RenewalsCarersPage from './admin/RenewalsCarersPage';
 import RenewalsCustomerSupportPage from './admin/RenewalsCustomerSupportPage';
 import TrackingCardsPage from './admin/TrackingCardsPage';
 import Settings from './admin/Settings';
+import useGoogleTranslate from './hooks/useGoogleTranslate';
 
 function App() {
+  useGoogleTranslate();
   return (
     <Router>
       <div className="min-h-screen bg-white">

@@ -169,6 +169,8 @@ const RenewCustomerSupport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+
       {/* Hero Section */}
       <section
         className="relative py-20 bg-cover bg-center bg-no-repeat"
