@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//api';
+const API_BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api';
 
 export interface CreateVerifiedLanyardApplicationRequest {
   firstName: string;

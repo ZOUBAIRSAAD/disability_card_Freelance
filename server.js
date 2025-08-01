@@ -32,8 +32,8 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//payment?payment=cancelled`,
+      success_url: `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/payment?payment=cancelled`,
       metadata: {
         cardType: cardType,
         applicantName: `${applicationData?.firstName || ''} ${applicationData?.lastName || ''}`,

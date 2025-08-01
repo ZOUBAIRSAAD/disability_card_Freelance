@@ -23,7 +23,7 @@ const PartnersCarousel: React.FC = () => {
     // Fetch partners from API
     const fetchPartners = async () => {
       try {
-        const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//api/partners');
+        const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/partners');
         if (response.ok) {
           const data = await response.json();
           // Take only first 8 partners for the carousel
