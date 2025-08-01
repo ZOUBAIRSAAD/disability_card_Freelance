@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5253/api';
+const API_BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//api';
 
 export interface LoginRequest {
   username: string;

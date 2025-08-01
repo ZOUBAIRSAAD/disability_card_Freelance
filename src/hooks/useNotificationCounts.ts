@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface NotificationCounts {
   disabilities: number;
@@ -107,7 +107,7 @@ export const useNotificationCounts = () => {
       setLoading(true);
       
       // Fetch counts from dashboard stats endpoint
-      const response = await fetch('http://localhost:5253/api/Admin/dashboard/stats', {
+      const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//api/Admin/dashboard/stats', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
           'Content-Type': 'application/json'

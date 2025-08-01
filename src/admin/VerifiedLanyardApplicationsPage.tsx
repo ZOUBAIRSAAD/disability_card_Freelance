@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Badge, Clock, CheckCircle, XCircle, Filter, Download, Eye, Edit, Trash2, Truck, Package } from 'lucide-react';
+import { Badge, CheckCircle, Clock, Download, Edit, Eye, Filter, Package, Trash2, Truck, XCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { verifiedLanyardApplicationAPI, VerifiedLanyardApplicationResponse, VerifiedLanyardApplicationStats } from '../api/verifiedLanyardApplicationApi';
-import { useNotifications } from '../contexts/NotificationContext';
 
 const VerifiedLanyardApplicationsPage = () => {
   const [applications, setApplications] = useState<VerifiedLanyardApplicationResponse[]>([]);
@@ -394,7 +393,7 @@ const VerifiedLanyardApplicationsPage = () => {
                           </button>
                           {application.cardImagePath && (
                             <a
-                              href={`http://localhost:5253${application.cardImagePath}`}
+                              href={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${application.cardImagePath}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-green-600 hover:text-green-900"

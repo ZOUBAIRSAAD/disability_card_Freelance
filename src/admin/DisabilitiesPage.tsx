@@ -1,8 +1,8 @@
-import { CheckCircle, Clock, Eye, Filter, Search, XCircle, CreditCard } from 'lucide-react';
+import { CheckCircle, Clock, CreditCard, Eye, Filter, Search, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { adminAPI, DisabilityApplication } from '../api/adminApi';
-import { useNotifications } from '../contexts/NotificationContext';
 import CreateOnlyCardModal from '../components/CreateOnlyCardModal';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const DisabilitiesPage: React.FC = () => {
   const [applications, setApplications] = useState<DisabilityApplication[]>([]);
@@ -170,7 +170,7 @@ const DisabilitiesPage: React.FC = () => {
                         {doc.filePath && (doc.fileType.includes('image') || doc.fileType.includes('jpg') || doc.fileType.includes('png')) && (
                           <div className="mt-3">
                             <img 
-                              src={`http://localhost:5253${doc.filePath}`} 
+                              src={`https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${doc.filePath}`} 
                               alt={`Document ${index + 1}`}
                               className="w-full h-48 object-cover rounded border"
                             />

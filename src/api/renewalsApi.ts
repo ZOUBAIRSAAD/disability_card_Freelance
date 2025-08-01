@@ -1,5 +1,5 @@
 // API functions for renewal applications
-const BASE_URL = 'http://localhost:5253/api';
+const BASE_URL = 'https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev//api';
 
 export interface RenewalApplication {
   id: number;
