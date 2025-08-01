@@ -117,7 +117,7 @@ const PartnersCarousel: React.FC = () => {
               {partner.logo ? (
                 <div
                   className="bg-white rounded-md p-3 shadow-sm flex items-center justify-center hover:shadow-md transition-shadow"
-                  style={{ width: '8rem', height: '4.5rem' }}
+                  style={{ width: '12rem', height: '6rem' }}
                 >
                   <img
                     src={partner.logo.startsWith('http') ? partner.logo : `http://localhost:5253${partner.logo}`}
