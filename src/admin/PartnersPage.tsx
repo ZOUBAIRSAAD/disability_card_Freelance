@@ -126,7 +126,7 @@ const PartnersPage: React.FC = () => {
     });
     // Handle preview URL for existing partner logo
     if (partner.logo) {
-      const imageUrl = partner.logo.startsWith('http') ? partner.logo : `http://localhost:5253/${partner.logo}`;
+      const imageUrl = partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${partner.logo}`;
       setPreviewUrl(imageUrl);
     } else {
       setPreviewUrl(null);
@@ -275,7 +275,7 @@ const PartnersPage: React.FC = () => {
                       <div className="flex items-center">
                         {partner.logo ? (
                           <img
-                            src={partner.logo.startsWith('http') ? partner.logo : `http://localhost:5253/${partner.logo}`}
+                            src={partner.logo.startsWith('http') ? partner.logo : `https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/${partner.logo}`}
                             alt={partner.name}
                             className="h-10 w-10 rounded-lg object-contain bg-gray-100 mr-3"
                             onError={(e) => {
