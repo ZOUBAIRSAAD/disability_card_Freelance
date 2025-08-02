@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, ArrowRight, FileText, Clock, Shield, Headphones, Upload, X, Edit, Phone, User, Copy, DollarSign } from 'lucide-react';
+import { CheckCircle, ArrowRight, FileText, Clock, Shield, Headphones, Upload, X, Edit } from 'lucide-react';
 import { applicationAPI } from '../api/applicationApi';
 import toast from 'react-hot-toast';
+import PaymentStep from '../components/PaymentStep';
 
 const ApplyCustomerSupport = () => {
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ const ApplyCustomerSupport = () => {
     supportDescription: '',
     specialRequirements: '',
     emergencyContactName: '',
-    emergencyContactPhone: ''
+    emergencyContactPhone: '',
+    includeLanyard: false
   });
 
   const [showPaymentStep, setShowPaymentStep] = useState(false);
@@ -39,8 +41,6 @@ const ApplyCustomerSupport = () => {
     phoneNumber: ''
   });
 
-  const companyIBAN = 'GB82WEST12345698765432';
-
   const steps = [
     { number: 1, title: 'Personal Information', description: 'Your basic details' },
     { number: 2, title: 'Support Needs', description: 'What assistance you require' },
@@ -50,11 +50,25 @@ const ApplyCustomerSupport = () => {
     { number: 6, title: 'Payment', description: 'Complete your payment' } // Add this
   ];
 
+  // Calculate total amount based on lanyard inclusion
+  const baseAmount = 100;
+  const lanyardAmount = 20;
+  const totalAmount = baseAmount + (formData.includeLanyard ? lanyardAmount : 0);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData({
+        ...formData,
+        [name]: checked
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,11 +150,6 @@ const ApplyCustomerSupport = () => {
     });
   };
   
-  const copyIBANToClipboard = () => {
-    navigator.clipboard.writeText(companyIBAN);
-    alert('IBAN copied to clipboard!');
-  };
-  
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -185,180 +194,7 @@ const ApplyCustomerSupport = () => {
     setShowConfirmationModal(false);
     setCurrentStep(1);
   };
-  const renderPaymentStep = () => {
-    return (
-      <div className="space-y-6">
-        <div className="text-center mb-8">
-          <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <DollarSign className="w-8 h-8 text-green-600" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Complete Your Payment</h2>
-          <p className="text-gray-600">Application Fee: <span className="font-bold text-green-600">AED 100</span></p>
-        </div>
 
-        {/* Company IBAN */}
-        <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Bank Details</h3>
-          <div className="space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">IBAN Number</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={companyIBAN}
-                  readOnly
-                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg font-mono text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={copyIBANToClipboard}
-                  className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1"
-                >
-                  <Copy className="w-4 h-4" />
-                  <span>Copy</span>
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
-              <input
-                type="text"
-                value="National Disability Aid UAE"
-                readOnly
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-              <input
-                type="text"
-                value="AED 100"
-                readOnly
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg font-semibold"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Type Selection */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Payment Method</h3>
-          <div className="space-y-3">
-            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-green-500 transition-colors">
-              <input
-                type="radio"
-                name="paymentType"
-                value="bank-transfer"
-                checked={paymentData.paymentType === 'bank-transfer'}
-                onChange={handlePaymentInputChange}
-                className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
-              />
-              <div className="ml-3">
-                <p className="font-medium text-gray-900">Bank Transfer</p>
-                <p className="text-sm text-gray-600">Transfer directly to our bank account</p>
-              </div>
-            </label>
-            
-            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-not-allowed opacity-60">
-              <input
-                type="radio"
-                name="paymentType"
-                value="paypal"
-                disabled
-                className="w-4 h-4 text-gray-400 border-gray-300"
-              />
-              <div className="ml-3">
-                <p className="font-medium text-gray-500">PayPal</p>
-                <p className="text-sm text-gray-400">Coming Soon</p>
-              </div>
-            </label>
-            
-            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-not-allowed opacity-60">
-              <input
-                type="radio"
-                name="paymentType"
-                value="credit-card"
-                disabled
-                className="w-4 h-4 text-gray-400 border-gray-300"
-              />
-              <div className="ml-3">
-                <p className="font-medium text-gray-500">Credit Card</p>
-                <p className="text-sm text-gray-400">Coming Soon</p>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Bank Transfer Form */}
-        {paymentData.paymentType === 'bank-transfer' && (
-          <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
-            <h4 className="text-lg font-semibold text-green-900 mb-4">Confirm Bank Transfer Details</h4>
-            <p className="text-sm text-green-700 mb-4">
-              If you made a bank transfer, please enter your details below to confirm.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <User className="w-4 h-4 inline mr-1" />
-                  First Name *
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  required
-                  value={paymentData.firstName}
-                  onChange={handlePaymentInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <User className="w-4 h-4 inline mr-1" />
-                  Last Name *
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  required
-                  value={paymentData.lastName}
-                  onChange={handlePaymentInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
-            </div>
-            
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Phone className="w-4 h-4 inline mr-1" />
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                required
-                value={paymentData.phoneNumber}
-                onChange={handlePaymentInputChange}
-                placeholder="+971 XX XXX XXXX"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Coming Soon Message for Other Payment Methods */}
-        {(paymentData.paymentType === 'paypal' || paymentData.paymentType === 'credit-card') && (
-          <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg text-center">
-            <h4 className="text-lg font-semibold text-yellow-800 mb-2">Coming Soon</h4>
-            <p className="text-yellow-700">
-              This payment method is not available yet. Please use Bank Transfer for now.
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  };
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -446,6 +282,30 @@ const ApplyCustomerSupport = () => {
                   placeholder="784-XXXX-XXXXXXX-X"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800"
                 />
+              </div>
+            </div>
+
+            {/* Lanyard Option */}
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Services</h4>
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  name="includeLanyard"
+                  id="includeLanyard"
+                  checked={formData.includeLanyard}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                />
+                <div className="flex-1">
+                  <label htmlFor="includeLanyard" className="text-sm font-medium text-gray-700 cursor-pointer">
+                    Include Verified Global Disability Lanyard (+AED 20)
+                  </label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Add a discreet, internationally recognized lanyard for non-visible disabilities. 
+                    Helpful for customer support situations requiring additional understanding.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -697,6 +557,7 @@ const ApplyCustomerSupport = () => {
                   <p className="text-sm text-gray-600 mt-1">{formData.specialRequirements}</p>
                 </div>
               )}
+              <p><strong>Include Lanyard:</strong> {formData.includeLanyard ? 'Yes (+AED 20)' : 'No'}</p>
             </div>
 
             <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg">
@@ -719,6 +580,27 @@ const ApplyCustomerSupport = () => {
                   <span>Access to priority support services begins</span>
                 </li>
               </ul>
+              
+              {/* Payment Summary */}
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <h5 className="font-semibold text-gray-900 mb-2">Payment Summary:</h5>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Customer Support Card Application:</span>
+                    <span>AED {baseAmount}</span>
+                  </div>
+                  {formData.includeLanyard && (
+                    <div className="flex justify-between">
+                      <span>Verified Lanyard:</span>
+                      <span>AED {lanyardAmount}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-semibold border-t border-gray-200 pt-1">
+                    <span>Total:</span>
+                    <span>AED {totalAmount}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -967,14 +849,23 @@ const ApplyCustomerSupport = () => {
             <div className="mb-4">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Confirmed!</h3>
             <p className="text-gray-600 mb-4">
-              Your customer support card application has been submitted and is now under review.
+              Your customer support card application and payment have been submitted successfully. 
+              We will process your application within 48 hours.
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
               <p className="text-sm text-gray-700">
                 <strong>Application ID:</strong> #{applicationId}
               </p>
+              <p className="text-sm text-gray-700">
+                <strong>Total Amount:</strong> AED {totalAmount}
+              </p>
+              {formData.includeLanyard && (
+                <p className="text-sm text-gray-700">
+                  <strong>Includes:</strong> Verified Global Disability Lanyard
+                </p>
+              )}
             </div>
             <button
               onClick={() => navigate('/')}
@@ -994,7 +885,15 @@ const ApplyCustomerSupport = () => {
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
-        {renderPaymentStep()}
+        <PaymentStep
+          amount={totalAmount}
+          cardType="Customer Support Card"
+          paymentData={paymentData}
+          onPaymentDataChange={handlePaymentInputChange}
+          onSubmit={handlePaymentSubmit}
+          isSubmitting={false}
+          includeLanyard={formData.includeLanyard}
+        />
         
         <div className="flex justify-center space-x-4 mt-8 pt-6 border-t border-gray-200">
           <button
