@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Upload, FileText, Clock, Shield, CreditCard, X, Edit } from 'lucide-react';
+import { CheckCircle, ArrowRight, Upload, FileText, Clock, Shield, CreditCard, X, Edit, DollarSign, Copy, Phone, User } from 'lucide-react';
 import { applicationAPI } from '../api/applicationApi';
+import { toast } from 'react-hot-toast';
 
 const ApplyDisabilities = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [showPaymentStep, setShowPaymentStep] = useState(false);
   const [applicationId, setApplicationId] = useState<number>(0);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
@@ -30,19 +32,41 @@ const ApplyDisabilities = () => {
     emergencyContactPhone: ''
   });
 
+  const [paymentData, setPaymentData] = useState({
+    paymentType: 'bank-transfer',
+    firstName: '',
+    lastName: '',
+    phoneNumber: ''
+  });
+
   const steps = [
     { number: 1, title: 'Personal Information', description: 'Basic details about yourself' },
     { number: 2, title: 'Medical Information', description: 'Disability details and documentation' },
     { number: 3, title: 'Contact & Address', description: 'Where we can reach you' },
     { number: 4, title: 'Profile Picture', description: 'Upload your photo' },
-    { number: 5, title: 'Review & Submit', description: 'Confirm your application' }
+    { number: 5, title: 'Review & Submit', description: 'Confirm your application' },
+    { number: 6, title: 'Payment', description: 'Complete your payment' }
   ];
+
+  const companyIBAN = 'GB82WEST12345698765432';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handlePaymentInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setPaymentData({
+      ...paymentData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const copyIBANToClipboard = () => {
+    navigator.clipboard.writeText(companyIBAN);
+    toast.success('IBAN copied to clipboard!');
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,16 +174,218 @@ const ApplyDisabilities = () => {
       // Close confirmation modal and show success notification
       setShowConfirmationModal(false);
       setApplicationId(response.id);
-      setShowSuccessNotification(true);
+      
+      // Pre-fill payment form with application data
+      setPaymentData(prev => ({
+        ...prev,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNumber: formData.phoneNumber
+      }));
+      
+      // Show payment step instead of success notification
+      setShowPaymentStep(true);
     } catch (error) {
       console.error('Application submission failed:', error);
       alert('Failed to submit application. Please try again.');
     }
   };
 
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate payment form
+    if (paymentData.paymentType === 'bank-transfer') {
+      if (!paymentData.firstName || !paymentData.lastName || !paymentData.phoneNumber) {
+        toast.error('Please fill in all required fields');
+        return;
+      }
+    }
+    
+    // For now, just show success message
+    toast.success('Payment confirmation submitted successfully!');
+    setShowPaymentStep(false);
+    setShowSuccessNotification(true);
+  };
+
   const handleModify = () => {
     setShowConfirmationModal(false);
     setCurrentStep(1);
+  };
+
+  const renderPaymentStep = () => {
+    return (
+      <div className="space-y-6">
+        <div className="text-center mb-8">
+          <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <DollarSign className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Complete Your Payment</h2>
+          <p className="text-gray-600">Application Fee: <span className="font-bold text-green-600">AED 100</span></p>
+        </div>
+
+        {/* Company IBAN */}
+        <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Bank Details</h3>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">IBAN Number</label>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={companyIBAN}
+                  readOnly
+                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg font-mono text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={copyIBANToClipboard}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
+              <input
+                type="text"
+                value="National Disability Aid UAE"
+                readOnly
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+              <input
+                type="text"
+                value="AED 100"
+                readOnly
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg font-semibold"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Payment Type Selection */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Payment Method</h3>
+          <div className="space-y-3">
+            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-green-500 transition-colors">
+              <input
+                type="radio"
+                name="paymentType"
+                value="bank-transfer"
+                checked={paymentData.paymentType === 'bank-transfer'}
+                onChange={handlePaymentInputChange}
+                className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+              />
+              <div className="ml-3">
+                <p className="font-medium text-gray-900">Bank Transfer</p>
+                <p className="text-sm text-gray-600">Transfer directly to our bank account</p>
+              </div>
+            </label>
+            
+            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-not-allowed opacity-60">
+              <input
+                type="radio"
+                name="paymentType"
+                value="paypal"
+                disabled
+                className="w-4 h-4 text-gray-400 border-gray-300"
+              />
+              <div className="ml-3">
+                <p className="font-medium text-gray-500">PayPal</p>
+                <p className="text-sm text-gray-400">Coming Soon</p>
+              </div>
+            </label>
+            
+            <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-not-allowed opacity-60">
+              <input
+                type="radio"
+                name="paymentType"
+                value="credit-card"
+                disabled
+                className="w-4 h-4 text-gray-400 border-gray-300"
+              />
+              <div className="ml-3">
+                <p className="font-medium text-gray-500">Credit Card</p>
+                <p className="text-sm text-gray-400">Coming Soon</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {/* Bank Transfer Form */}
+        {paymentData.paymentType === 'bank-transfer' && (
+          <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+            <h4 className="text-lg font-semibold text-green-900 mb-4">Confirm Bank Transfer Details</h4>
+            <p className="text-sm text-green-700 mb-4">
+              If you made a bank transfer, please enter your details below to confirm.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <User className="w-4 h-4 inline mr-1" />
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  required
+                  value={paymentData.firstName}
+                  onChange={handlePaymentInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <User className="w-4 h-4 inline mr-1" />
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  required
+                  value={paymentData.lastName}
+                  onChange={handlePaymentInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
+              </div>
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Phone className="w-4 h-4 inline mr-1" />
+                Phone Number *
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                required
+                value={paymentData.phoneNumber}
+                onChange={handlePaymentInputChange}
+                placeholder="+971 XX XXX XXXX"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Coming Soon Message for Other Payment Methods */}
+        {(paymentData.paymentType === 'paypal' || paymentData.paymentType === 'credit-card') && (
+          <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg text-center">
+            <h4 className="text-lg font-semibold text-yellow-800 mb-2">Coming Soon</h4>
+            <p className="text-yellow-700">
+              This payment method is not available yet. Please use Bank Transfer for now.
+            </p>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderStepContent = () => {
@@ -537,6 +763,9 @@ const ApplyDisabilities = () => {
           </div>
         );
 
+      case 6:
+        return renderPaymentStep();
+
       default:
         return null;
     }
@@ -776,13 +1005,17 @@ const ApplyDisabilities = () => {
             <div className="mb-4">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Confirmed!</h3>
             <p className="text-gray-600 mb-4">
-              Your disability card application has been submitted and is now under review.
+              Your disability card application and payment have been submitted successfully. 
+              We will process your application within 48 hours.
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
               <p className="text-sm text-gray-700">
                 <strong>Application ID:</strong> #{applicationId}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Payment Method:</strong> {paymentData.paymentType === 'bank-transfer' ? 'Bank Transfer' : paymentData.paymentType}
               </p>
             </div>
             <button
@@ -791,6 +1024,47 @@ const ApplyDisabilities = () => {
             >
               Go to Home
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Step Modal */}
+      {showPaymentStep && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-4xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Complete Your Payment</h3>
+              <p className="text-gray-600">Application submitted successfully! Now complete your payment to finalize the process.</p>
+            </div>
+            
+            <form onSubmit={handlePaymentSubmit}>
+              {renderPaymentStep()}
+              
+              <div className="flex justify-center space-x-4 mt-8 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPaymentStep(false);
+                    setShowSuccessNotification(true);
+                  }}
+                  className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-all duration-300"
+                >
+                  Skip Payment (Pay Later)
+                </button>
+                <button
+                  type="submit"
+                  disabled={paymentData.paymentType !== 'bank-transfer'}
+                  className={`px-8 py-3 font-medium rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center ${
+                    paymentData.paymentType === 'bank-transfer'
+                      ? 'bg-green-600 text-white hover:bg-green-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Confirm Payment
+                  <CheckCircle className="ml-2 w-4 h-4" />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -133,7 +133,7 @@ const RenewDisabilities = () => {
     setErrorMessage('');
 
     try {
-      const response = await fetch('https://jolly-shadow-d2bf.elfadili-zoubair.workers.dev/api/renewal/disabilities', {
+      const response = await fetch('http://localhost:5253/api/renewal/disabilities', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
