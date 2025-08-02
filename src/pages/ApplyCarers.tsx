@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ArrowRight, Upload, FileText, Clock, Shield, Heart, X, Edit } from 'lucide-react';
 import { applicationAPI } from '../api/applicationApi';
+import PaymentStep from '../components/PaymentStep';
 
 const ApplyCarers = () => {
   const navigate = useNavigate();
@@ -28,10 +29,18 @@ const ApplyCarers = () => {
     caregivingExperience: '',
     supportingDocuments: null,
     emergencyContactName: '',
-    emergencyContactPhone: ''
+    emergencyContactPhone: '',
+    includeLanyard: false
   });
 
   const [supportingDocuments, setSupportingDocuments] = useState<File[]>([]);
+  const [showPaymentStep, setShowPaymentStep] = useState(false);
+  const [paymentData, setPaymentData] = useState({
+    paymentType: 'bank-transfer',
+    firstName: '',
+    lastName: '',
+    phoneNumber: ''
+  });
 
   const steps = [
     { number: 1, title: 'Personal Information', description: 'Your basic details' },
@@ -40,6 +49,11 @@ const ApplyCarers = () => {
     { number: 4, title: 'Profile Picture', description: 'Upload your photo' },
     { number: 5, title: 'Review & Submit', description: 'Confirm your application' }
   ];
+
+  // Calculate total amount based on lanyard inclusion
+  const baseAmount = 100;
+  const lanyardAmount = 20;
+  const totalAmount = baseAmount + (formData.includeLanyard ? lanyardAmount : 0);
 
   const validateStep = (step: number): boolean => {
     switch (step) {
@@ -61,8 +75,24 @@ const ApplyCarers = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData({
+        ...formData,
+        [name]: checked
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
+  };
+
+  const handlePaymentInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setPaymentData({
+      ...paymentData,
       [e.target.name]: e.target.value
     });
   };
@@ -140,11 +170,38 @@ const ApplyCarers = () => {
       // Close confirmation modal and show success notification
       setShowConfirmationModal(false);
       setApplicationId(response.id);
-      setShowSuccessNotification(true);
+      
+      // Pre-fill payment form with application data
+      setPaymentData(prev => ({
+        ...prev,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNumber: formData.phoneNumber
+      }));
+      
+      // Show payment step instead of success notification
+      setShowPaymentStep(true);
     } catch (error) {
       console.error('Application submission failed:', error);
       alert('Failed to submit application. Please try again.');
     }
+  };
+
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate payment form
+    if (paymentData.paymentType === 'bank-transfer') {
+      if (!paymentData.firstName || !paymentData.lastName || !paymentData.phoneNumber) {
+        alert('Please fill in all required fields');
+        return;
+      }
+    }
+    
+    // For now, just show success message
+    alert('Payment confirmation submitted successfully!');
+    setShowPaymentStep(false);
+    setShowSuccessNotification(true);
   };
 
   const handleModify = () => {
@@ -239,6 +296,30 @@ const ApplyCarers = () => {
                   placeholder="784-XXXX-XXXXXXX-X"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-uae-red focus:border-uae-red"
                 />
+              </div>
+            </div>
+
+            {/* Lanyard Option */}
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Services</h4>
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  name="includeLanyard"
+                  id="includeLanyard"
+                  checked={formData.includeLanyard}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                />
+                <div className="flex-1">
+                  <label htmlFor="includeLanyard" className="text-sm font-medium text-gray-700 cursor-pointer">
+                    Include Verified Global Disability Lanyard (+AED 20)
+                  </label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Add a discreet, internationally recognized lanyard for the care recipient. 
+                    Helps identify non-visible disabilities when providing care.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -524,6 +605,7 @@ const ApplyCarers = () => {
                   <p><strong>Care Recipient:</strong> {formData.careRecipientName}</p>
                   <p><strong>Relationship:</strong> {formData.relationshipToRecipient}</p>
                   <p><strong>Caregiving Experience:</strong> {formData.caregivingExperience}</p>
+                  <p><strong>Include Lanyard:</strong> {formData.includeLanyard ? 'Yes (+AED 20)' : 'No'}</p>
                 </div>
               </div>
             </div>
@@ -548,6 +630,27 @@ const ApplyCarers = () => {
                   <span>Access to caregiver support services</span>
                 </li>
               </ul>
+              
+              {/* Payment Summary */}
+              <div className="mt-6 pt-4 border-t border-red-200">
+                <h5 className="font-semibold text-red-900 mb-2">Payment Summary:</h5>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Carers Card Application:</span>
+                    <span>AED {baseAmount}</span>
+                  </div>
+                  {formData.includeLanyard && (
+                    <div className="flex justify-between">
+                      <span>Verified Lanyard:</span>
+                      <span>AED {lanyardAmount}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-semibold border-t border-red-200 pt-1">
+                    <span>Total:</span>
+                    <span>AED {totalAmount}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -793,14 +896,23 @@ const ApplyCarers = () => {
             <div className="mb-4">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Confirmed!</h3>
             <p className="text-gray-600 mb-4">
-              Your carers card application has been submitted and is now under review.
+              Your carers card application and payment have been submitted successfully. 
+              We will process your application within 48 hours.
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
               <p className="text-sm text-gray-700">
                 <strong>Application ID:</strong> #{applicationId}
               </p>
+              <p className="text-sm text-gray-700">
+                <strong>Total Amount:</strong> AED {totalAmount}
+              </p>
+              {formData.includeLanyard && (
+                <p className="text-sm text-gray-700">
+                  <strong>Includes:</strong> Verified Global Disability Lanyard
+                </p>
+              )}
             </div>
             <button
               onClick={() => navigate('/')}
@@ -808,6 +920,55 @@ const ApplyCarers = () => {
             >
               Go to Home
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Step Modal */}
+      {showPaymentStep && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-4xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Complete Your Payment</h3>
+              <p className="text-gray-600">Application submitted successfully! Now complete your payment to finalize the process.</p>
+            </div>
+            
+            <form onSubmit={handlePaymentSubmit}>
+              <PaymentStep
+                amount={totalAmount}
+                cardType="Carers Card"
+                paymentData={paymentData}
+                onPaymentDataChange={handlePaymentInputChange}
+                onSubmit={handlePaymentSubmit}
+                isSubmitting={false}
+                includeLanyard={formData.includeLanyard}
+              />
+              
+              <div className="flex justify-center space-x-4 mt-8 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPaymentStep(false);
+                    setShowSuccessNotification(true);
+                  }}
+                  className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-all duration-300"
+                >
+                  Skip Payment (Pay Later)
+                </button>
+                <button
+                  type="submit"
+                  disabled={paymentData.paymentType !== 'bank-transfer'}
+                  className={`px-8 py-3 font-medium rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center ${
+                    paymentData.paymentType === 'bank-transfer'
+                      ? 'bg-green-600 text-white hover:bg-green-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Confirm Payment
+                  <CheckCircle className="ml-2 w-4 h-4" />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
